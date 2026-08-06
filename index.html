@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHAHIN MOBI TECH</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .hidden-section { display: none; }
@@ -12,23 +11,19 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- Container Box -->
     <div class="bg-white shadow-xl rounded-xl p-6 w-full max-w-md border border-slate-200">
         
-        <!-- App Title -->
         <div class="text-center mb-6">
             <h1 class="text-2xl font-bold text-blue-600 tracking-wide">SHAHIN MOBI TECH</h1>
             <p class="text-xs text-slate-500 mt-1">Management & Service Portal</p>
         </div>
 
-        <!-- Notification Message Box -->
         <div id="alertBox" class="hidden-section mb-4 p-3 rounded text-sm text-center font-medium"></div>
 
-        <!-- 1. REGISTER FORM -->
+        <!-- REGISTER FORM -->
         <div id="registerSection">
             <h2 class="text-lg font-semibold text-slate-700 mb-4 border-b pb-2">Create Account</h2>
             
-            <!-- Step 1: Input Details -->
             <div id="regStep1" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium mb-1">Full Name</label>
@@ -45,7 +40,6 @@
                 <button onclick="sendOTP()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition">Send OTP</button>
             </div>
 
-            <!-- Step 2: OTP Verification -->
             <div id="regStep2" class="space-y-4 hidden-section">
                 <div>
                     <label class="block text-sm font-medium mb-1">Enter OTP</label>
@@ -60,7 +54,7 @@
             </p>
         </div>
 
-        <!-- 2. LOGIN FORM -->
+        <!-- LOGIN FORM -->
         <div id="loginSection" class="hidden-section">
             <h2 class="text-lg font-semibold text-slate-700 mb-4 border-b pb-2">Login</h2>
             <div class="space-y-4">
@@ -80,7 +74,7 @@
             </p>
         </div>
 
-        <!-- 3. DASHBOARD (AFTER LOGIN) -->
+        <!-- DASHBOARD -->
         <div id="dashboardSection" class="hidden-section text-center py-4">
             <div class="mb-4">
                 <span class="inline-block p-3 bg-green-100 text-green-600 rounded-full mb-2">
@@ -102,9 +96,7 @@
 
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
-        // Utility for Alerts
         function showAlert(msg, isSuccess = false) {
             const box = document.getElementById('alertBox');
             box.innerText = msg;
@@ -116,7 +108,6 @@
             document.getElementById('alertBox').classList.add('hidden-section');
         }
 
-        // View Toggles
         function showLogin() {
             clearAlert();
             document.getElementById('registerSection').classList.add('hidden-section');
@@ -133,7 +124,6 @@
             document.getElementById('regStep2').classList.add('hidden-section');
         }
 
-        // Registration Flow
         function sendOTP() {
             const name = document.getElementById('regName').value.trim();
             const mobile = document.getElementById('regMobile').value.trim();
@@ -149,14 +139,12 @@
                 return;
             }
 
-            // Check if user already exists in localStorage
             const existingUsers = JSON.parse(localStorage.getItem('smt_users') || '{}');
             if (existingUsers[mobile]) {
                 showAlert('Mobile number already registered. Please login.');
                 return;
             }
 
-            // Move to OTP Step
             document.getElementById('regStep1').classList.add('hidden-section');
             document.getElementById('regStep2').classList.remove('hidden-section');
             showAlert('OTP sent successfully to your mobile number! (Use demo OTP: 1234)', true);
@@ -168,13 +156,11 @@
             const mobile = document.getElementById('regMobile').value.trim();
             const password = document.getElementById('regPassword').value.trim();
 
-            // Demo OTP Validation
             if (otp !== '1234') {
                 showAlert('Invalid OTP. Please enter 1234.');
                 return;
             }
 
-            // Save User Record
             const users = JSON.parse(localStorage.getItem('smt_users') || '{}');
             users[mobile] = { name: name, password: password };
             localStorage.setItem('smt_users', JSON.stringify(users));
@@ -185,7 +171,6 @@
             }, 1200);
         }
 
-        // Login Flow
         function loginUser() {
             const mobile = document.getElementById('loginMobile').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
@@ -208,12 +193,10 @@
                 return;
             }
 
-            // Set Active Session
             localStorage.setItem('smt_session', JSON.stringify({ name: user.name, mobile: mobile }));
             loadDashboard();
         }
 
-        // Dashboard & Session Management
         function loadDashboard() {
             const session = JSON.parse(localStorage.getItem('smt_session') || 'null');
             if (session) {
@@ -232,7 +215,6 @@
             showAlert('Logged out successfully.', true);
         }
 
-        // Auto-check session on page load
         window.onload = function() {
             const session = JSON.parse(localStorage.getItem('smt_session') || 'null');
             if (session) {
@@ -242,4 +224,3 @@
     </script>
 </body>
 </html>
- 
