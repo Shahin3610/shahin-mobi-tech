@@ -1,287 +1,244 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHAHIN MOBI TECH - Store & Repair Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    
+    <title>SHAHIN MOBI TECH</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f8fafc; position: relative; }
-        body::before {
-            content: "SHAHIN MOBI TECH";
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 5rem; font-weight: 900; color: rgba(13, 110, 253, 0.04);
-            white-space: nowrap; pointer-events: none; z-index: 0;
-        }
-        .main-container { position: relative; z-index: 1; }
-        .invoice-box { background: white; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; position: relative; }
-        .invoice-watermark {
-            position: absolute; top: 40%; left: 50%;
-            transform: translate(-50%, -50%) rotate(-20deg);
-            font-size: 3rem; font-weight: 800; color: rgba(0, 0, 0, 0.05); pointer-events: none;
-        }
-        @media print { .no-print { display: none !important; } }
+        .hidden-section { display: none; }
     </style>
 </head>
-<body>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
-<div class="container main-container py-4">
-    <!-- Header -->
-    <header class="d-flex justify-content-between align-items-center bg-dark text-white p-3 rounded mb-4 no-print">
-        <div>
-            <h4 class="m-0 fw-bold text-warning">SHAHIN MOBI TECH</h4>
-            <small id="liveDateTime" class="text-info"></small>
-        </div>
-    </header>
-
-    <!-- Navigation Tabs -->
-    <ul class="nav nav-pills mb-4 no-print" id="pills-tab">
-        <li class="nav-item">
-            <button class="nav-link active" onclick="showTab('stock')"><i class="fa-solid fa-boxes-stacked me-1"></i> Stock Management</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" onclick="showTab('invoice')"><i class="fa-solid fa-file-invoice me-1"></i> Create Invoice</button>
-        </li>
-        <li class="nav-item">
-            <button class="nav-link" onclick="showTab('customers')"><i class="fa-solid fa-users me-1"></i> Customer Data</button>
-        </li>
-    </ul>
-
-    <!-- TAB 1: Stock Management -->
-    <div id="tab-stock" class="tab-content-item">
-        <div class="row g-4">
-            <div class="col-md-4 no-print">
-                <div class="card p-3 shadow-sm">
-                    <h5 class="card-title text-primary">Stock In (পণ্য যোগ করুন)</h5>
-                    <form id="stockForm">
-                        <div class="mb-2">
-                            <label class="form-label small">পণ্যের নাম</label>
-                            <input type="text" id="itemName" class="form-control" placeholder="e.g. Display Folder" required>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label small">ক্যাটাগরি</label>
-                            <input type="text" id="itemCategory" class="form-control" placeholder="e.g. Display" required>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 mb-2">
-                                <label class="form-label small">পরিমাণ</label>
-                                <input type="number" id="itemQty" class="form-control" min="1" required>
-                            </div>
-                            <div class="col-6 mb-2">
-                                <label class="form-label small">মূল্য (৳)</label>
-                                <input type="number" id="itemPrice" class="form-control" min="0" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-2">ডাটাবেজে সেভ করুন</button>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="card p-3 shadow-sm">
-                    <h5 class="m-0 mb-3">লাইভ স্টক (Cloud Firestore)</h5>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered align-middle">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>পণ্য</th>
-                                    <th>ক্যাটাগরি</th>
-                                    <th>পরিমাণ</th>
-                                    <th>মূল্য</th>
-                                </tr>
-                            </thead>
-                            <tbody id="stockTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 2: Invoice Creation -->
-    <div id="tab-invoice" class="tab-content-item" style="display: none;">
-        <div class="row">
-            <div class="col-md-5 no-print">
-                <div class="card p-3 shadow-sm">
-                    <h5 class="text-primary mb-3">ইনভয়েস তৈরি করুন</h5>
-                    <form id="invoiceForm">
-                        <div class="mb-2"><label class="form-label small">কাস্টমারের নাম</label><input type="text" id="custName" class="form-control" required></div>
-                        <div class="mb-2"><label class="form-label small">মোবাইল নম্বর</label><input type="tel" id="custPhone" class="form-control" required></div>
-                        <div class="mb-2"><label class="form-label small">ঠিকানা</label><textarea id="custAddress" class="form-control" rows="2"></textarea></div>
-                        <div class="mb-2"><label class="form-label small">সার্ভিস বিবরণ</label><input type="text" id="serviceDesc" class="form-control" required></div>
-                        <div class="row">
-                            <div class="col-6 mb-2"><label class="form-label small">পরিমাণ</label><input type="number" id="invQty" class="form-control" value="1" min="1" required></div>
-                            <div class="col-6 mb-2"><label class="form-label small">মোট চার্জ (৳)</label><input type="number" id="invAmount" class="form-control" required></div>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100 mt-2">ইনভয়েস সেভ ও জেনারেট করুন</button>
-                    </form>
-                </div>
-            </div>
-            <div class="col-md-7">
-                <div class="invoice-box">
-                    <div class="invoice-watermark">SHAHIN MOBI TECH</div>
-                    <div class="d-flex justify-content-between border-bottom pb-2 mb-3">
-                        <div>
-                            <h3 class="fw-bold text-primary m-0">SHAHIN MOBI TECH</h3>
-                            <p class="small text-muted mb-0">অল মোবাইল রিপেয়ারিং & এক্সেসরিজ</p>
-                        </div>
-                        <div class="text-end">
-                            <h5 class="fw-bold text-danger m-0" id="invNumberDisplay">INVOICE #00001</h5>
-                            <small id="invDateDisplay" class="text-muted"></small>
-                        </div>
-                    </div>
-                    <p class="m-0"><strong>নাম:</strong> <span id="billCustName">---</span></p>
-                    <p class="m-0"><strong>মোবাইল:</strong> <span id="billCustPhone">---</span></p>
-                    <p class="m-0 mb-3"><strong>ঠিকানা:</strong> <span id="billCustAddress">---</span></p>
-                    <table class="table table-bordered">
-                        <thead><tr><th>বিবরণ</th><th class="text-center">পরিমাণ</th><th class="text-end">টাকা</th></tr></thead>
-                        <tbody>
-                            <tr>
-                                <td id="billService">---</td>
-                                <td class="text-center" id="billQty">0</td>
-                                <td class="text-end" id="billAmount">0 ৳</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button class="btn btn-dark no-print w-100 mt-2" onclick="window.print()">Print Invoice</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TAB 3: Customer Records -->
-    <div id="tab-customers" class="tab-content-item" style="display: none;">
-        <div class="card p-3 shadow-sm">
-            <h5>কাস্টমার ইনভয়েস হিস্ট্রি</h5>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered align-middle">
-                    <thead class="table-primary">
-                        <tr><th>ইনভয়েস #</th><th>তারিখ</th><th>কাস্টমার</th><th>ফোন</th><th>সার্ভিস</th><th>টাকা</th></tr>
-                    </thead>
-                    <tbody id="customerTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // 🔥 আপনার Firebase প্রজেক্টের Config কোড
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuwRNsopyI-AJ0YWtJeBcU0cqBdue39Vo",
-      authDomain: "shahin-mobi-tech.firebaseapp.com",
-      projectId: "shahin-mobi-tech",
-      storageBucket: "shahin-mobi-tech.firebasestorage.app",
-      messagingSenderId: "904762916388",
-      appId: "1:904762916388:web:bde750edfa4a87fcd022b1"
-    };
-
-    // Firebase ইনিশিয়ালাইজেশন
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // ঘড়ি
-    setInterval(() => {
-        document.getElementById('liveDateTime').innerText = new Date().toLocaleString('bn-BD');
-    }, 1000);
-
-    // ট্যাব সুইচ
-    function showTab(tabName) {
-        document.querySelectorAll('.tab-content-item').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('#pills-tab .nav-link').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`tab-${tabName}`).style.display = 'block';
-        event.target.classList.add('active');
-    }
-
-    // স্টক ডাটাবেজে যুক্ত করা
-    document.getElementById('stockForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        db.collection("stocks").add({
-            name: document.getElementById('itemName').value,
-            category: document.getElementById('itemCategory').value,
-            qty: parseInt(document.getElementById('itemQty').value),
-            price: parseFloat(document.getElementById('itemPrice').value)
-        }).then(() => {
-            alert("ডাটা সফলভাবে Firebase-এ সেভ হয়েছে!");
-            document.getElementById('stockForm').reset();
-        });
-    });
-
-    // স্টক লাইভ রিড করা
-    db.collection("stocks").onSnapshot((snapshot) => {
-        const tbody = document.getElementById('stockTableBody');
-        tbody.innerHTML = '';
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>${data.name}</strong></td>
-                    <td><span class="badge bg-secondary">${data.category}</span></td>
-                    <td><span class="badge bg-success">${data.qty} Pcs</span></td>
-                    <td>৳ ${data.price}</td>
-                </tr>
-            `;
-        });
-    });
-
-    // ইনভয়েস জেনারেট ও ডাটাবেজে সেভ
-    document.getElementById('invoiceForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    <!-- Container Box -->
+    <div class="bg-white shadow-xl rounded-xl p-6 w-full max-w-md border border-slate-200">
         
-        db.collection("invoices").get().then((snap) => {
-            const count = snap.size + 1;
-            const invNum = String(count).padStart(5, '0');
-            const now = new Date().toLocaleString();
+        <!-- App Title -->
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-blue-600 tracking-wide">SHAHIN MOBI TECH</h1>
+            <p class="text-xs text-slate-500 mt-1">Management & Service Portal</p>
+        </div>
 
-            const invData = {
-                invNum: invNum,
-                date: now,
-                name: document.getElementById('custName').value,
-                phone: document.getElementById('custPhone').value,
-                address: document.getElementById('custAddress').value,
-                service: document.getElementById('serviceDesc').value,
-                qty: document.getElementById('invQty').value,
-                amount: document.getElementById('invAmount').value
-            };
+        <!-- Notification Message Box -->
+        <div id="alertBox" class="hidden-section mb-4 p-3 rounded text-sm text-center font-medium"></div>
 
-            db.collection("invoices").add(invData).then(() => {
-                document.getElementById('invNumberDisplay').innerText = `INVOICE #${invData.invNum}`;
-                document.getElementById('invDateDisplay').innerText = invData.date;
-                document.getElementById('billCustName').innerText = invData.name;
-                document.getElementById('billCustPhone').innerText = invData.phone;
-                document.getElementById('billCustAddress').innerText = invData.address;
-                document.getElementById('billService').innerText = invData.service;
-                document.getElementById('billQty').innerText = invData.qty;
-                document.getElementById('billAmount').innerText = `${invData.amount} ৳`;
-                alert("ইনভয়েস তৈরি ও ডাটাবেজে সেভ সম্পন্ন!");
-            });
-        });
-    });
+        <!-- 1. REGISTER FORM -->
+        <div id="registerSection">
+            <h2 class="text-lg font-semibold text-slate-700 mb-4 border-b pb-2">Create Account</h2>
+            
+            <!-- Step 1: Input Details -->
+            <div id="regStep1" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Full Name</label>
+                    <input type="text" id="regName" placeholder="Enter your full name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Mobile Number</label>
+                    <input type="tel" id="regMobile" placeholder="e.g. 9876543210" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input type="password" id="regPassword" placeholder="Create a password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button onclick="sendOTP()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition">Send OTP</button>
+            </div>
 
-    // কাস্টমার হিস্ট্রি
-    db.collection("invoices").onSnapshot((snapshot) => {
-        const tbody = document.getElementById('customerTableBody');
-        tbody.innerHTML = '';
-        snapshot.forEach((doc) => {
-            const inv = doc.data();
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>#${inv.invNum}</strong></td>
-                    <td><small>${inv.date}</small></td>
-                    <td>${inv.name}</td>
-                    <td>${inv.phone}</td>
-                    <td>${inv.service}</td>
-                    <td class="fw-bold text-success">৳ ${inv.amount}</td>
-                </tr>
-            `;
-        });
-    });
-</script>
+            <!-- Step 2: OTP Verification -->
+            <div id="regStep2" class="space-y-4 hidden-section">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Enter OTP</label>
+                    <input type="text" id="regOTP" placeholder="Enter 4-digit OTP (e.g. 1234)" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center tracking-widest text-lg">
+                    <p class="text-xs text-slate-400 mt-1 text-center">Demo OTP: <span class="font-bold text-slate-600">1234</span></p>
+                </div>
+                <button onclick="verifyOTPAndRegister()" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition">Verify OTP & Register</button>
+            </div>
+
+            <p class="text-xs text-center mt-4 text-slate-600">
+                Already have an account? <a href="#" onclick="showLogin()" class="text-blue-600 font-semibold hover:underline">Login here</a>
+            </p>
+        </div>
+
+        <!-- 2. LOGIN FORM -->
+        <div id="loginSection" class="hidden-section">
+            <h2 class="text-lg font-semibold text-slate-700 mb-4 border-b pb-2">Login</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Mobile Number</label>
+                    <input type="tel" id="loginMobile" placeholder="Enter mobile number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button onclick="loginUser()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition">Login</button>
+            </div>
+
+            <p class="text-xs text-center mt-4 text-slate-600">
+                Don't have an account? <a href="#" onclick="showRegister()" class="text-blue-600 font-semibold hover:underline">Register now</a>
+            </p>
+        </div>
+
+        <!-- 3. DASHBOARD (AFTER LOGIN) -->
+        <div id="dashboardSection" class="hidden-section text-center py-4">
+            <div class="mb-4">
+                <span class="inline-block p-3 bg-green-100 text-green-600 rounded-full mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </span>
+                <h2 class="text-xl font-bold text-slate-800">Welcome, <span id="userDisplayName">User</span>!</h2>
+                <p class="text-sm text-slate-500 mt-1">You are successfully logged in to SHAHIN MOBI TECH.</p>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-lg border mb-4 text-left text-sm space-y-1">
+                <p><strong>Mobile:</strong> <span id="userDisplayMobile"></span></p>
+                <p><strong>Status:</strong> <span class="text-green-600 font-semibold">Active Member</span></p>
+            </div>
+
+            <button onclick="logoutUser()" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-medium transition">Logout</button>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Utility for Alerts
+        function showAlert(msg, isSuccess = false) {
+            const box = document.getElementById('alertBox');
+            box.innerText = msg;
+            box.className = `mb-4 p-3 rounded text-sm text-center font-medium ${isSuccess ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`;
+            box.classList.remove('hidden-section');
+        }
+
+        function clearAlert() {
+            document.getElementById('alertBox').classList.add('hidden-section');
+        }
+
+        // View Toggles
+        function showLogin() {
+            clearAlert();
+            document.getElementById('registerSection').classList.add('hidden-section');
+            document.getElementById('loginSection').classList.remove('hidden-section');
+            document.getElementById('dashboardSection').classList.add('hidden-section');
+        }
+
+        function showRegister() {
+            clearAlert();
+            document.getElementById('loginSection').classList.add('hidden-section');
+            document.getElementById('registerSection').classList.remove('hidden-section');
+            document.getElementById('dashboardSection').classList.add('hidden-section');
+            document.getElementById('regStep1').classList.remove('hidden-section');
+            document.getElementById('regStep2').classList.add('hidden-section');
+        }
+
+        // Registration Flow
+        function sendOTP() {
+            const name = document.getElementById('regName').value.trim();
+            const mobile = document.getElementById('regMobile').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            if (!name || !mobile || !password) {
+                showAlert('Please fill in all details.');
+                return;
+            }
+
+            if (mobile.length < 10) {
+                showAlert('Please enter a valid mobile number.');
+                return;
+            }
+
+            // Check if user already exists in localStorage
+            const existingUsers = JSON.parse(localStorage.getItem('smt_users') || '{}');
+            if (existingUsers[mobile]) {
+                showAlert('Mobile number already registered. Please login.');
+                return;
+            }
+
+            // Move to OTP Step
+            document.getElementById('regStep1').classList.add('hidden-section');
+            document.getElementById('regStep2').classList.remove('hidden-section');
+            showAlert('OTP sent successfully to your mobile number! (Use demo OTP: 1234)', true);
+        }
+
+        function verifyOTPAndRegister() {
+            const otp = document.getElementById('regOTP').value.trim();
+            const name = document.getElementById('regName').value.trim();
+            const mobile = document.getElementById('regMobile').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            // Demo OTP Validation
+            if (otp !== '1234') {
+                showAlert('Invalid OTP. Please enter 1234.');
+                return;
+            }
+
+            // Save User Record
+            const users = JSON.parse(localStorage.getItem('smt_users') || '{}');
+            users[mobile] = { name: name, password: password };
+            localStorage.setItem('smt_users', JSON.stringify(users));
+
+            showAlert('Registration successful! Please login.', true);
+            setTimeout(() => {
+                showLogin();
+            }, 1200);
+        }
+
+        // Login Flow
+        function loginUser() {
+            const mobile = document.getElementById('loginMobile').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            if (!mobile || !password) {
+                showAlert('Please enter mobile number and password.');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('smt_users') || '{}');
+            const user = users[mobile];
+
+            if (!user) {
+                showAlert('Mobile number not found. Please register first.');
+                return;
+            }
+
+            if (user.password !== password) {
+                showAlert('Incorrect password.');
+                return;
+            }
+
+            // Set Active Session
+            localStorage.setItem('smt_session', JSON.stringify({ name: user.name, mobile: mobile }));
+            loadDashboard();
+        }
+
+        // Dashboard & Session Management
+        function loadDashboard() {
+            const session = JSON.parse(localStorage.getItem('smt_session') || 'null');
+            if (session) {
+                clearAlert();
+                document.getElementById('registerSection').classList.add('hidden-section');
+                document.getElementById('loginSection').classList.add('hidden-section');
+                document.getElementById('dashboardSection').classList.remove('hidden-section');
+                document.getElementById('userDisplayName').innerText = session.name;
+                document.getElementById('userDisplayMobile').innerText = session.mobile;
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('smt_session');
+            showLogin();
+            showAlert('Logged out successfully.', true);
+        }
+
+        // Auto-check session on page load
+        window.onload = function() {
+            const session = JSON.parse(localStorage.getItem('smt_session') || 'null');
+            if (session) {
+                loadDashboard();
+            }
+        };
+    </script>
 </body>
 </html>
