@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHAHIN MOBI TECH - Store & Repair Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        body { background-color: #f8fafc; position: relative; }
+        body::before {
+            content: "SHAHIN MOBI TECH";
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 5rem; font-weight: 900; color: rgba(13, 110, 253, 0.04);
+            white-space: nowrap; pointer-events: none; z-index: 0;
+        }
+        .main-container { position: relative; z-index: 1; }
+        .invoice-box { background: white; padding: 30px; border: 1px solid #e2e8f0; border-radius: 8px; position: relative; }
+        .invoice-watermark {
+            position: absolute; top: 40%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            font-size: 3rem; font-weight: 800; color: rgba(0, 0, 0, 0.05); pointer-events: none;
+        }
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+
+<div class="container main-container py-4">
+    <!-- Header -->
+    <header class="d-flex justify-content-between align-items-center bg-dark text-white p-3 rounded mb-4 no-print">
+        <div>
+            <h4 class="m-0 fw-bold text-warning">SHAHIN MOBI TECH</h4>
+            <small id="liveDateTime" class="text-info"></small>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills mb-4 no-print" id="pills-tab">
+        <li class="nav-item">
+            <button class="nav-link active" onclick="showTab('stock')"><i class="fa-solid fa-boxes-stacked me-1"></i> Stock Management</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" onclick="showTab('invoice')"><i class="fa-solid fa-file-invoice me-1"></i> Create Invoice</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" onclick="showTab('customers')"><i class="fa-solid fa-users me-1"></i> Customer Data</button>
+        </li>
+    </ul>
+
+    <!-- TAB 1: Stock Management -->
+    <div id="tab-stock" class="tab-content-item">
+        <div class="row g-4">
+            <div class="col-md-4 no-print">
+                <div class="card p-3 shadow-sm">
+                    <h5 class="card-title text-primary">Stock In (পণ্য যোগ করুন)</h5>
+                    <form id="stockForm">
+                        <div class="mb-2">
+                            <label class="form-label small">পণ্যের নাম</label>
+                            <input type="text" id="itemName" class="form-control" placeholder="e.g. Display Folder" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">ক্যাটাগরি</label>
+                            <input type="text" id="itemCategory" class="form-control" placeholder="e.g. Display" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-2">
+                                <label class="form-label small">পরিমাণ</label>
+                                <input type="number" id="itemQty" class="form-control" min="1" required>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="form-label small">মূল্য (৳)</label>
+                                <input type="number" id="itemPrice" class="form-control" min="0" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-2">ডাটাবেজে সেভ করুন</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card p-3 shadow-sm">
+                    <h5 class="m-0 mb-3">লাইভ স্টক (Cloud Firestore)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>পণ্য</th>
+                                    <th>ক্যাটাগরি</th>
+                                    <th>পরিমাণ</th>
+                                    <th>মূল্য</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Invoice Creation -->
+    <div id="tab-invoice" class="tab-content-item" style="display: none;">
+        <div class="row">
+            <div class="col-md-5 no-print">
+                <div class="card p-3 shadow-sm">
+                    <h5 class="text-primary mb-3">ইনভয়েস তৈরি করুন</h5>
+                    <form id="invoiceForm">
+                        <div class="mb-2"><label class="form-label small">কাস্টমারের নাম</label><input type="text" id="custName" class="form-control" required></div>
+                        <div class="mb-2"><label class="form-label small">মোবাইল নম্বর</label><input type="tel" id="custPhone" class="form-control" required></div>
+                        <div class="mb-2"><label class="form-label small">ঠিকানা</label><textarea id="custAddress" class="form-control" rows="2"></textarea></div>
+                        <div class="mb-2"><label class="form-label small">সার্ভিস বিবরণ</label><input type="text" id="serviceDesc" class="form-control" required></div>
+                        <div class="row">
+                            <div class="col-6 mb-2"><label class="form-label small">পরিমাণ</label><input type="number" id="invQty" class="form-control" value="1" min="1" required></div>
+                            <div class="col-6 mb-2"><label class="form-label small">মোট চার্জ (৳)</label><input type="number" id="invAmount" class="form-control" required></div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 mt-2">ইনভয়েস সেভ ও জেনারেট করুন</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="invoice-box">
+                    <div class="invoice-watermark">SHAHIN MOBI TECH</div>
+                    <div class="d-flex justify-content-between border-bottom pb-2 mb-3">
+                        <div>
+                            <h3 class="fw-bold text-primary m-0">SHAHIN MOBI TECH</h3>
+                            <p class="small text-muted mb-0">অল মোবাইল রিপেয়ারিং & এক্সেসরিজ</p>
+                        </div>
+                        <div class="text-end">
+                            <h5 class="fw-bold text-danger m-0" id="invNumberDisplay">INVOICE #00001</h5>
+                            <small id="invDateDisplay" class="text-muted"></small>
+                        </div>
+                    </div>
+                    <p class="m-0"><strong>নাম:</strong> <span id="billCustName">---</span></p>
+                    <p class="m-0"><strong>মোবাইল:</strong> <span id="billCustPhone">---</span></p>
+                    <p class="m-0 mb-3"><strong>ঠিকানা:</strong> <span id="billCustAddress">---</span></p>
+                    <table class="table table-bordered">
+                        <thead><tr><th>বিবরণ</th><th class="text-center">পরিমাণ</th><th class="text-end">টাকা</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td id="billService">---</td>
+                                <td class="text-center" id="billQty">0</td>
+                                <td class="text-end" id="billAmount">0 ৳</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-dark no-print w-100 mt-2" onclick="window.print()">Print Invoice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Customer Records -->
+    <div id="tab-customers" class="tab-content-item" style="display: none;">
+        <div class="card p-3 shadow-sm">
+            <h5>কাস্টমার ইনভয়েস হিস্ট্রি</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-primary">
+                        <tr><th>ইনভয়েস #</th><th>তারিখ</th><th>কাস্টমার</th><th>ফোন</th><th>সার্ভিস</th><th>টাকা</th></tr>
+                    </thead>
+                    <tbody id="customerTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 🔥 আপনার Firebase প্রজেক্টের Config কোড
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuwRNsopyI-AJ0YWtJeBcU0cqBdue39Vo",
+      authDomain: "shahin-mobi-tech.firebaseapp.com",
+      projectId: "shahin-mobi-tech",
+      storageBucket: "shahin-mobi-tech.firebasestorage.app",
+      messagingSenderId: "904762916388",
+      appId: "1:904762916388:web:bde750edfa4a87fcd022b1"
+    };
+
+    // Firebase ইনিশিয়ালাইজেশন
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // ঘড়ি
+    setInterval(() => {
+        document.getElementById('liveDateTime').innerText = new Date().toLocaleString('bn-BD');
+    }, 1000);
+
+    // ট্যাব সুইচ
+    function showTab(tabName) {
+        document.querySelectorAll('.tab-content-item').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('#pills-tab .nav-link').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`tab-${tabName}`).style.display = 'block';
+        event.target.classList.add('active');
+    }
+
+    // স্টক ডাটাবেজে যুক্ত করা
+    document.getElementById('stockForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        db.collection("stocks").add({
+            name: document.getElementById('itemName').value,
+            category: document.getElementById('itemCategory').value,
+            qty: parseInt(document.getElementById('itemQty').value),
+            price: parseFloat(document.getElementById('itemPrice').value)
+        }).then(() => {
+            alert("ডাটা সফলভাবে Firebase-এ সেভ হয়েছে!");
+            document.getElementById('stockForm').reset();
+        });
+    });
+
+    // স্টক লাইভ রিড করা
+    db.collection("stocks").onSnapshot((snapshot) => {
+        const tbody = document.getElementById('stockTableBody');
+        tbody.innerHTML = '';
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${data.name}</strong></td>
+                    <td><span class="badge bg-secondary">${data.category}</span></td>
+                    <td><span class="badge bg-success">${data.qty} Pcs</span></td>
+                    <td>৳ ${data.price}</td>
+                </tr>
+            `;
+        });
+    });
+
+    // ইনভয়েস জেনারেট ও ডাটাবেজে সেভ
+    document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        db.collection("invoices").get().then((snap) => {
+            const count = snap.size + 1;
+            const invNum = String(count).padStart(5, '0');
+            const now = new Date().toLocaleString();
+
+            const invData = {
+                invNum: invNum,
+                date: now,
+                name: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                address: document.getElementById('custAddress').value,
+                service: document.getElementById('serviceDesc').value,
+                qty: document.getElementById('invQty').value,
+                amount: document.getElementById('invAmount').value
+            };
+
+            db.collection("invoices").add(invData).then(() => {
+                document.getElementById('invNumberDisplay').innerText = `INVOICE #${invData.invNum}`;
+                document.getElementById('invDateDisplay').innerText = invData.date;
+                document.getElementById('billCustName').innerText = invData.name;
+                document.getElementById('billCustPhone').innerText = invData.phone;
+                document.getElementById('billCustAddress').innerText = invData.address;
+                document.getElementById('billService').innerText = invData.service;
+                document.getElementById('billQty').innerText = invData.qty;
+                document.getElementById('billAmount').innerText = `${invData.amount} ৳`;
+                alert("ইনভয়েস তৈরি ও ডাটাবেজে সেভ সম্পন্ন!");
+            });
+        });
+    });
+
+    // কাস্টমার হিস্ট্রি
+    db.collection("invoices").onSnapshot((snapshot) => {
+        const tbody = document.getElementById('customerTableBody');
+        tbody.innerHTML = '';
+        snapshot.forEach((doc) => {
+            const inv = doc.data();
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>#${inv.invNum}</strong></td>
+                    <td><small>${inv.date}</small></td>
+                    <td>${inv.name}</td>
+                    <td>${inv.phone}</td>
+                    <td>${inv.service}</td>
+                    <td class="fw-bold text-success">৳ ${inv.amount}</td>
+                </tr>
+            `;
+        });
+    });
+</script>
+</body>
+</html>
