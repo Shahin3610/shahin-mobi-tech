@@ -239,33 +239,10 @@
         </div>
     </div>
 
-    <!-- FIREBASE SDK (MODULAR V10) WITH CORRECT ASIA DATABASE URL -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAuwRNsopyI-AJ0YWtJeBcU0cqBdue39Vo",
-            authDomain: "shahin-mobi-tech.firebaseapp.com",
-            databaseURL: "https://shahin-mobi-tech-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "shahin-mobi-tech",
-            storageBucket: "shahin-mobi-tech.firebasestorage.app",
-            messagingSenderId: "904762916388",
-            appId: "1:904762916388:web:bde750edfa4a87fcd022b1"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const firebaseDb = getDatabase(app);
-
-        window.firebaseDb = firebaseDb;
-        window.fbRef = ref;
-        window.fbSet = set;
-        window.fbOnValue = onValue;
-        window.fbGet = get;
-        window.fbChild = child;
-    </script>
-
     <script>
+        // FIREBASE REST API CONFIG (FAST & ZERO LAG)
+        const DB_BASE_URL = "https://shahin-mobi-tech-default-rtdb.asia-southeast1.firebasedatabase.app";
+
         let currentUser = "";
         let db = { invs: [], stk: {} };
 
@@ -295,7 +272,7 @@
             alert("OTP Sent! Default OTP is 1234");
         }
 
-        // FIREBASE CLOUD REGISTER
+        // FAST REGISTER VIA REST API
         async function verifyAndRegister() {
             const phone = document.getElementById('reg-phone').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
@@ -308,12 +285,15 @@
             regBtn.disabled = true;
 
             try {
-                if(!window.firebaseDb) throw new Error("Firebase DB initialization failed.");
+                const res = await fetch(`${DB_BASE_URL}/users/${phone}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pass })
+                });
 
-                // Save User Credential directly to Cloud Database
-                await window.fbSet(window.fbRef(window.firebaseDb, 'users/' + phone), { password: pass });
+                if(!res.ok) throw new Error("Cloud save failed.");
 
-                alert("Account created successfully in Firebase Cloud Database! Please Login now.");
+                alert("Registration Successful! Please login.");
                 document.getElementById('reg-step-2').classList.add('hidden');
                 document.getElementById('reg-step-1').classList.remove('hidden');
                 document.getElementById('login-phone').value = phone;
@@ -321,14 +301,14 @@
                 toggleAuth('login');
 
             } catch (err) {
-                alert("Cloud Register Error: " + err.message);
+                alert("Register Error: " + err.message);
             } finally {
                 regBtn.innerText = "Verify & Register";
                 regBtn.disabled = false;
             }
         }
 
-        // FIREBASE CLOUD LOGIN
+        // FAST LOGIN VIA REST API
         async function login() {
             const phone = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -341,18 +321,13 @@
             loginBtn.disabled = true;
 
             try {
-                if(!window.firebaseDb) throw new Error("Firebase DB connection failed.");
+                const res = await fetch(`${DB_BASE_URL}/users/${phone}.json`);
+                const userData = await res.json();
 
-                // Read User from Firebase Realtime Database
-                const dbRef = window.fbRef(window.firebaseDb);
-                const snapshot = await window.fbGet(window.fbChild(dbRef, `users/${phone}`));
-
-                if (!snapshot.exists()) {
-                    alert("Account '" + phone + "' not found. Please click 'Register Here' to create account first.");
+                if (!userData) {
+                    alert("Account not found! Click 'New User? Register Here' first.");
                     return;
                 }
-
-                const userData = snapshot.val();
 
                 if (userData.password !== pass) {
                     alert("Incorrect Password!");
@@ -370,7 +345,7 @@
                 launchDashboard();
 
             } catch (err) {
-                alert("Login Error: " + err.message);
+                alert("Login Error: Connection failed. Check internet connection.");
             } finally {
                 loginBtn.innerText = "Enter Dashboard";
                 loginBtn.disabled = false;
@@ -385,13 +360,12 @@
             }
         }
 
-        function launchDashboard() {
+        async function launchDashboard() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-display').innerText = currentUser;
             
-            setupFirebaseRealtime();
-            loadDb();
+            await syncFromCloud();
             resetInv();
         }
 
@@ -400,25 +374,45 @@
             location.reload();
         }
 
-        function setupFirebaseRealtime() {
-            if(!window.firebaseDb || !currentUser) return;
-            
-            const userDbRef = window.fbRef(window.firebaseDb, 'app_data/' + currentUser);
-            
-            window.fbOnValue(userDbRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
+        async function syncFromCloud() {
+            if(!currentUser) return;
+            try {
+                const res = await fetch(`${DB_BASE_URL}/app_data/${currentUser}.json`);
+                const data = await res.json();
+                if(data) {
                     db = data;
                     if(!db.stk) db.stk = {};
                     if(!db.invs) db.invs = [];
-                    localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db));
-                    document.getElementById('bill-counter').innerText = db.invs.length;
-                    renderHistory(db.invs);
-                    if(document.getElementById('tab-stock').style.display === 'block') {
-                        renderStock();
-                    }
+                } else {
+                    loadLocalDb();
                 }
-            });
+            } catch (e) {
+                loadLocalDb();
+            }
+            document.getElementById('bill-counter').innerText = db.invs.length;
+            renderHistory(db.invs);
+        }
+
+        function saveDb() { 
+            if(currentUser) {
+                localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db)); 
+                fetch(`${DB_BASE_URL}/app_data/${currentUser}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(db)
+                }).catch(err => console.log("Cloud sync error:", err));
+            }
+        }
+
+        function loadLocalDb() {
+            const stored = localStorage.getItem('shahin_master_' + currentUser);
+            if(stored) {
+                db = JSON.parse(stored);
+                if(!db.stk) db.stk = {};
+                if(!db.invs) db.invs = [];
+            } else {
+                db = { invs: [], stk: {} };
+            }
         }
 
         function exportData() {
@@ -443,7 +437,8 @@
                         if(!db.stk) db.stk = {};
                         if(!db.invs) db.invs = [];
                         saveDb();
-                        loadDb();
+                        document.getElementById('bill-counter').innerText = db.invs.length;
+                        renderHistory(db.invs);
                         alert("Data restored!");
                     }
                 } catch (err) {
@@ -586,7 +581,8 @@
             }
 
             saveDb(); 
-            loadDb();
+            document.getElementById('bill-counter').innerText = db.invs.length;
+            renderHistory(db.invs);
 
             document.getElementById('print-payment').style.display = 'block';
             window.print();
@@ -597,7 +593,8 @@
             if(confirm("Delete this invoice?")) {
                 db.invs.splice(idx, 1);
                 saveDb();
-                loadDb();
+                document.getElementById('bill-counter').innerText = db.invs.length;
+                renderHistory(db.invs);
             }
         }
 
@@ -651,29 +648,6 @@
             v.items.forEach(it => addBillRow(it.n, it.q, it.p));
             calc();
             showTab('bill');
-        }
-
-        function saveDb() { 
-            if(currentUser) {
-                localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db)); 
-                if(window.firebaseDb) {
-                    window.fbSet(window.fbRef(window.firebaseDb, 'app_data/' + currentUser), db);
-                }
-            }
-        }
-
-        function loadDb() {
-            if(!currentUser) return;
-            const stored = localStorage.getItem('shahin_master_' + currentUser);
-            if(stored) {
-                db = JSON.parse(stored);
-                if(!db.stk) db.stk = {};
-                if(!db.invs) db.invs = [];
-            } else {
-                db = { invs: [], stk: {} };
-            }
-            document.getElementById('bill-counter').innerText = db.invs.length;
-            renderHistory(db.invs);
         }
     </script>
 </body>
