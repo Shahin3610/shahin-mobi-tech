@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHAHIN MOBI TECH | Cloud Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase Official Libraries (SDK v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
         :root { 
             --brand: #1a1a1a; 
@@ -197,8 +202,12 @@
     </div>
 
     <script>
-        // FIREBASE CLOUD REALTIME DATABASE URL (Fixed Region)
-        const DB_BASE_URL = "https://shahin-mobi-tech-default-rtdb.asia-southeast1.firebasedatabase.app";
+        // Official Firebase Initialization
+        const firebaseConfig = {
+            databaseURL: "https://shahin-mobi-tech-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
         let currentUser = "";
         let db = { invs: [], stk: {} };
@@ -227,8 +236,8 @@
             alert("OTP Sent! Default OTP is 1234");
         }
 
-        // FIREBASE REGISTRATION (Any Device)
-        async function verifyAndRegister() {
+        // REGISTER WITH OFFICIAL SDK
+        function verifyAndRegister() {
             const rawPhone = document.getElementById('reg-phone').value.trim();
             const phone = rawPhone.replace(/[^0-9]/g, '');
             const pass = document.getElementById('reg-pass').value.trim();
@@ -241,31 +250,28 @@
             regBtn.innerText = "Registering...";
             regBtn.disabled = true;
 
-            try {
-                const res = await fetch(`${DB_BASE_URL}/users/${phone}.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: pass, createdAt: new Date().toISOString() })
-                });
-
-                if(!res.ok) throw new Error("Cloud network error");
-
-                alert("Registration Successful! Please login.");
-                document.getElementById('reg-step-2').classList.add('hidden');
-                document.getElementById('reg-step-1').classList.remove('hidden');
-                document.getElementById('login-phone').value = phone;
-                document.getElementById('login-pass').value = pass;
-                toggleAuth('login');
-            } catch(err) {
-                alert("Registration Failed: " + err.message);
-            } finally {
+            database.ref('users/' + phone).set({
+                password: pass,
+                createdAt: new Date().toISOString()
+            }, function(error) {
                 regBtn.innerText = "Verify & Register";
                 regBtn.disabled = false;
-            }
+                
+                if (error) {
+                    alert("Registration Failed: " + error.message);
+                } else {
+                    alert("Registration Successful! Please login.");
+                    document.getElementById('reg-step-2').classList.add('hidden');
+                    document.getElementById('reg-step-1').classList.remove('hidden');
+                    document.getElementById('login-phone').value = phone;
+                    document.getElementById('login-pass').value = pass;
+                    toggleAuth('login');
+                }
+            });
         }
 
-        // FIREBASE CLOUD LOGIN (Any Device)
-        async function login() {
+        // LOGIN WITH OFFICIAL SDK
+        function login() {
             const rawPhone = document.getElementById('login-phone').value.trim();
             const phone = rawPhone.replace(/[^0-9]/g, '');
             const pass = document.getElementById('login-pass').value.trim();
@@ -277,10 +283,11 @@
             loginBtn.innerText = "Logging in...";
             loginBtn.disabled = true;
 
-            try {
-                const res = await fetch(`${DB_BASE_URL}/users/${phone}.json`);
-                const userData = await res.json();
-
+            database.ref('users/' + phone).once('value').then((snapshot) => {
+                loginBtn.innerText = "Enter Dashboard";
+                loginBtn.disabled = false;
+                
+                const userData = snapshot.val();
                 if (!userData) {
                     alert("Account not found! Click 'New User? Register Here' first.");
                     return;
@@ -296,12 +303,11 @@
                 else localStorage.removeItem('shahin_remembered_user');
 
                 launchDashboard();
-            } catch(err) {
-                alert("Login Error: " + err.message);
-            } finally {
+            }).catch((error) => {
                 loginBtn.innerText = "Enter Dashboard";
                 loginBtn.disabled = false;
-            }
+                alert("Login Error: " + error.message);
+            });
         }
 
         function checkRememberedUser() {
@@ -317,7 +323,7 @@
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-display').innerText = currentUser;
             
-            await loadCloudDb();
+            loadCloudDb();
             resetInv();
         }
 
@@ -326,20 +332,15 @@
             location.reload();
         }
 
-        async function saveDb() { 
+        function saveDb() { 
             if(currentUser) {
-                await fetch(`${DB_BASE_URL}/data/${currentUser}.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(db)
-                });
+                database.ref('data/' + currentUser).set(db);
             }
         }
 
-        async function loadCloudDb() {
-            try {
-                const res = await fetch(`${DB_BASE_URL}/data/${currentUser}.json`);
-                const cloudData = await res.json();
+        function loadCloudDb() {
+            database.ref('data/' + currentUser).once('value').then((snapshot) => {
+                const cloudData = snapshot.val();
                 if(cloudData) {
                     db = cloudData;
                     if(!db.stk) db.stk = {};
@@ -347,11 +348,9 @@
                 } else {
                     db = { invs: [], stk: {} };
                 }
-            } catch(e) {
-                db = { invs: [], stk: {} };
-            }
-            document.getElementById('bill-counter').innerText = db.invs.length;
-            renderHistory(db.invs);
+                document.getElementById('bill-counter').innerText = db.invs.length;
+                renderHistory(db.invs);
+            });
         }
 
         function showTab(t) {
@@ -445,7 +444,7 @@
             calc();
         }
 
-        async function saveAndPrint() {
+        function saveAndPrint() {
             const rows = document.querySelectorAll('#bill-items tr');
             if(rows.length === 0) return alert("Please add at least one item.");
 
@@ -486,7 +485,7 @@
                 db.invs.push(invoice);
             }
 
-            await saveDb(); 
+            saveDb(); 
             document.getElementById('bill-counter').innerText = db.invs.length;
             renderHistory(db.invs);
 
