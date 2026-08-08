@@ -4,51 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHAHIN MOBI TECH | Master Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --brand: #1a1a1a; --primary: #2563eb; --danger: #e11d48; --success: #10b981; --bg: #f8fafc; }
+        :root { 
+            --brand: #1a1a1a; 
+            --primary: #2563eb; 
+            --primary-hover: #1d4ed8;
+            --danger: #e11d48; 
+            --success: #10b981; 
+            --bg: #f8fafc; 
+        }
+        
+        * { box-sizing: border-box; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
         
         /* Login & Auth Pages */
-        #auth-screen { max-width: 400px; margin: 60px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
-        .input-f { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box; }
+        #auth-screen { 
+            max-width: 420px; 
+            margin: 60px auto; 
+            background: white; 
+            padding: 40px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
+            text-align: center; 
+        }
+        .input-f { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            outline: none;
+            transition: border 0.2s;
+        }
+        .input-f:focus { border-color: var(--primary); }
         .auth-toggle-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; margin-top: 15px; display: inline-block; font-size: 14px; }
         .checkbox-container { text-align: left; margin: 10px 0; font-size: 14px; color: #475569; display: flex; align-items: center; gap: 8px; }
         .hidden { display: none !important; }
         
         /* Navigation */
         #main-app { display: none; max-width: 1100px; margin: auto; }
-        .nav-bar { display: flex; gap: 10px; margin-bottom: 25px; background: white; padding: 15px; border-radius: 12px; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .btn { padding: 10px 18px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; }
+        .nav-bar { display: flex; gap: 10px; margin-bottom: 25px; background: white; padding: 15px; border-radius: 12px; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex-wrap: wrap; }
+        .btn { padding: 10px 18px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn:hover { opacity: 0.9; }
         .btn-tab { background: #f1f5f9; color: #475569; }
         .btn-tab.active { background: var(--primary); color: white; }
 
         /* Invoice Sheet Styling */
-        .invoice-sheet { background: white; width: 800px; margin: auto; padding: 50px; position: relative; min-height: 1050px; box-shadow: 0 0 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 60px; color: rgba(0,0,0,0.035); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel'; width: 100%; text-align: center; white-space: nowrap; }
+        .invoice-sheet { background: white; width: 100%; max-width: 800px; margin: auto; padding: 40px; position: relative; min-height: 1000px; box-shadow: 0 0 30px rgba(0,0,0,0.08); border-radius: 8px; }
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 55px; color: rgba(0,0,0,0.03); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel', serif; width: 100%; text-align: center; white-space: nowrap; }
         
-        .shop-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 30px; }
-        .shop-name { font-family: 'Cinzel', serif; font-size: 44px; margin: 0; color: #000; text-transform: uppercase; letter-spacing: 2px; }
+        .shop-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px; }
+        .shop-name { font-family: 'Cinzel', serif; font-size: 38px; margin: 0; color: #000; text-transform: uppercase; letter-spacing: 2px; }
         
         /* Table Controls */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; z-index: 1; position: relative; }
-        th { background: #f8fafc; border: 1px solid #000; padding: 12px; text-align: left; }
-        td { border: 1px solid #000; padding: 10px; }
-        .cell-input { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; }
+        th { background: #f8fafc; border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
+        td { border: 1px solid #000; padding: 8px; }
+        .cell-input { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-family: inherit; }
 
         /* History & Stock UI */
         .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .auth-block { margin-top: 80px; text-align: right; }
-        .auth-line { display: inline-block; border-top: 1px solid #000; width: 240px; padding-top: 8px; font-weight: bold; text-align: center; }
+        .auth-line { display: inline-block; border-top: 1px solid #000; width: 240px; padding-top: 8px; font-weight: bold; text-align: center; font-size: 14px; }
 
         /* Delete Button in History */
-        .btn-del { background: #fee2e2; color: #b91c1c; padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer; margin-left: 5px; }
+        .btn-del { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn-del:hover { background: #f87171; color: white; }
 
         @media print {
             .no-print { display: none !important; }
-            body { background: white; padding: 0; }
-            .invoice-sheet { box-shadow: none; border: none; width: 100%; padding: 20px; }
+            body { background: white; padding: 0; margin: 0; }
+            .invoice-sheet { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; min-height: auto; }
+            .cell-input { border: none !important; }
         }
     </style>
 </head>
@@ -56,11 +85,11 @@
 
     <!-- AUTH SCREEN (LOGIN & REGISTER) -->
     <div id="auth-screen">
-        <h1 style="font-family: 'Cinzel'; margin:0">SHAHIN</h1>
-        <p style="margin-top:0; color:#64748b; letter-spacing:3px; font-size: 12px;">MOBI TECH PORTAL</p>
+        <h1 style="font-family: 'Cinzel', serif; margin:0; letter-spacing: 1px;">SHAHIN</h1>
+        <p style="margin-top:2px; color:#64748b; letter-spacing:3px; font-size: 11px; font-weight: 700;">MOBI TECH PORTAL</p>
         
         <!-- LOGIN SECTION -->
-        <div id="login-section" style="margin-top: 20px;">
+        <div id="login-section" style="margin-top: 25px;">
             <h3 style="margin-bottom: 15px; color: #334155;">Login to Account</h3>
             <input type="tel" id="login-phone" class="input-f" placeholder="Mobile Number">
             <input type="password" id="login-pass" class="input-f" placeholder="Password">
@@ -70,26 +99,26 @@
                 <label for="remember-me">Remember Login Details</label>
             </div>
             
-            <button onclick="login()" class="btn" style="background:var(--brand); color:white; width:100%; margin-top: 10px;">Enter Dashboard</button>
+            <button onclick="login()" class="btn" style="background:var(--brand); color:white; width:100%; margin-top: 10px; padding: 12px;">Enter Dashboard</button>
             <span class="auth-toggle-link" onclick="toggleAuth('register')">New User? Register Here</span>
         </div>
 
         <!-- REGISTER SECTION -->
-        <div id="register-section" class="hidden" style="margin-top: 20px;">
+        <div id="register-section" class="hidden" style="margin-top: 25px;">
             <h3 style="margin-bottom: 15px; color: #334155;">Create Account</h3>
             
             <!-- Step 1: Input Mobile & Password -->
             <div id="reg-step-1">
                 <input type="tel" id="reg-phone" class="input-f" placeholder="Mobile Number">
                 <input type="password" id="reg-pass" class="input-f" placeholder="Set Password">
-                <button onclick="sendOTP()" class="btn" style="background:var(--primary); color:white; width:100%; margin-top: 10px;">Send OTP</button>
+                <button onclick="sendOTP()" class="btn" style="background:var(--primary); color:white; width:100%; margin-top: 10px; padding: 12px;">Send OTP</button>
             </div>
 
             <!-- Step 2: Verify OTP -->
             <div id="reg-step-2" class="hidden">
                 <p style="font-size: 13px; color: #64748b;">OTP sent! Enter default OTP <strong style="color:var(--primary)">1234</strong></p>
                 <input type="text" id="reg-otp" class="input-f" placeholder="Enter 4-Digit OTP" maxlength="4" style="text-align: center; letter-spacing: 4px; font-weight: bold;">
-                <button onclick="verifyAndRegister()" class="btn" style="background:var(--success); color:white; width:100%; margin-top: 10px;">Verify & Register</button>
+                <button onclick="verifyAndRegister()" class="btn" style="background:var(--success); color:white; width:100%; margin-top: 10px; padding: 12px;">Verify & Register</button>
             </div>
 
             <span class="auth-toggle-link" onclick="toggleAuth('login')">Already have an account? Login</span>
@@ -102,88 +131,115 @@
             <button class="btn btn-tab active" id="btn-bill" onclick="showTab('bill')">Create Bill</button>
             <button class="btn btn-tab" id="btn-stock" onclick="showTab('stock')">Inventory</button>
             <button class="btn btn-tab" id="btn-his" onclick="showTab('his')">History</button>
-            <div style="margin-left: auto; font-weight: bold; color:var(--primary)">Invoice Count: <span id="bill-counter">0</span></div>
+            <div style="margin-left: auto; font-weight: bold; color:var(--primary); font-size: 14px;">
+                User: <span id="user-display" style="color:var(--brand)"></span> | Invoices: <span id="bill-counter">0</span>
+            </div>
             <button onclick="logout()" class="btn" style="background:var(--danger); color:white; margin-left:15px">Logout</button>
         </div>
 
+        <!-- TAB: CREATE BILL -->
         <div id="tab-bill">
             <div class="invoice-sheet" id="print-sheet">
                 <div class="watermark">SHAHIN MOBI TECH</div>
                 <div class="shop-header">
                     <h1 class="shop-name">SHAHIN MOBI TECH</h1>
-                    <p style="margin:5px 0">Nagarbera :: Kamrup :: Assam :: 781127</p>
-                    <strong>Phone: 7086992870</strong>
+                    <p style="margin:5px 0; font-size: 14px;">Nagarbera :: Kamrup :: Assam :: 781127</p>
+                    <strong style="font-size: 14px;">Phone: 7086992870</strong>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; margin-bottom: 25px;">
-                    <div style="border: 1px solid #000; padding: 15px; width: 320px;">
-                        <strong>CUSTOMER DETAILS:</strong>
-                        <input type="text" id="c-name" class="cell-input" placeholder="Full Name">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px; gap: 20px;">
+                    <div style="border: 1px solid #000; padding: 12px; width: 320px; border-radius: 4px;">
+                        <strong style="font-size: 12px; letter-spacing: 1px;">CUSTOMER DETAILS:</strong>
+                        <input type="text" id="c-name" class="cell-input" placeholder="Full Name" style="margin-top:4px;">
                         <input type="text" id="c-phone" class="cell-input" placeholder="Phone / Address">
                     </div>
-                    <div style="text-align: right;">
-                        <p>Date: <span id="cur-date"></span></p>
-                        <p>Invoice No: #<span id="inv-no">0001</span></p>
+                    <div style="text-align: right; font-size: 14px;">
+                        <p style="margin: 4px 0;">Date: <span id="cur-date"></span></p>
+                        <p style="margin: 4px 0;">Invoice No: #<span id="inv-no">0001</span></p>
                     </div>
                 </div>
 
                 <table>
                     <thead>
-                        <tr><th>Description</th><th width="60">Qty</th><th width="100">Price</th><th width="110">Total</th></tr>
+                        <tr>
+                            <th>Description</th>
+                            <th width="70">Qty</th>
+                            <th width="110">Price</th>
+                            <th width="110">Total</th>
+                            <th width="40" class="no-print"></th>
+                        </tr>
                     </thead>
                     <tbody id="bill-items"></tbody>
                 </table>
-                <button class="no-print btn" onclick="addBillRow()" style="margin-top:10px; background:#475569; color:white">+ Add Item</button>
+                <button class="no-print btn" onclick="addBillRow()" style="margin-top:12px; background:#475569; color:white">+ Add Item</button>
 
-                <div style="text-align: right; margin-top: 40px; font-size: 18px;">
-                    <div style="margin-bottom: 5px;">Grand Total: <strong>₹ <span id="g-total">0.00</span></strong></div>
-                    <div class="no-print" style="color:var(--success)">Paid: <input type="number" id="paid-amt" value="0" oninput="calc()" style="width:100px; text-align:right"></div>
-                    <div class="no-print" style="color:var(--danger)">Pending: <strong>₹ <span id="pend-amt">0.00</span></strong></div>
-                    <div id="print-payment" style="display:none; font-size: 14px;">
+                <div style="text-align: right; margin-top: 30px; font-size: 16px;">
+                    <div style="margin-bottom: 8px;">Grand Total: <strong>₹ <span id="g-total">0.00</span></strong></div>
+                    
+                    <div class="no-print" style="color:var(--success); margin-bottom: 6px;">
+                        Paid: ₹ <input type="number" id="paid-amt" value="0" oninput="calc()" style="width:100px; text-align:right; font-weight:bold; padding:4px;" min="0">
+                    </div>
+                    <div class="no-print" style="color:var(--danger)">
+                        Pending: <strong>₹ <span id="pend-amt">0.00</span></strong>
+                    </div>
+
+                    <!-- Print-only View for Payment -->
+                    <div id="print-payment" style="display:none; font-size: 14px; border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
                         <div>Paid Amount: ₹ <span id="pr-paid">0.00</span></div>
                         <div>Pending Amount: ₹ <span id="pr-pend">0.00</span></div>
                     </div>
                 </div>
 
                 <div class="auth-block">
-                    <div class="auth-line">SHAHIN MOBI TECH<br><small>(Authorized Signatory)</small></div>
+                    <div class="auth-line">SHAHIN MOBI TECH<br><small style="font-weight: normal;">(Authorized Signatory)</small></div>
                 </div>
             </div>
+
             <div style="text-align: center; margin: 30px 0" class="no-print">
-                <button onclick="saveAndPrint()" class="btn" style="background:var(--success); color:white; padding: 15px 60px; font-size: 18px">Save & Print</button>
+                <button onclick="saveAndPrint()" class="btn" style="background:var(--success); color:white; padding: 14px 50px; font-size: 16px;">Save & Print Invoice</button>
+                <button onclick="resetInv()" class="btn" style="background:#64748b; color:white; padding: 14px 30px; font-size: 16px; margin-left: 10px;">New Invoice</button>
             </div>
         </div>
 
+        <!-- TAB: INVENTORY -->
         <div id="tab-stock" style="display: none;">
             <div class="card">
-                <h3>Add Stock (Stock In)</h3>
-                <div style="display:flex; gap:10px">
-                    <input type="text" id="sk-name" class="input-f" style="margin:0" placeholder="Product Name">
-                    <input type="number" id="sk-qty" class="input-f" style="margin:0" placeholder="Quantity">
-                    <button onclick="addStock()" class="btn" style="background:var(--primary); color:white">Update Stock</button>
+                <h3 style="margin-top:0;">Add / Update Stock (Stock In)</h3>
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <input type="text" id="sk-name" class="input-f" style="margin:0; flex: 2; min-width: 200px;" placeholder="Product Name (e.g. POCO M6 DISPLAY)">
+                    <input type="number" id="sk-qty" class="input-f" style="margin:0; flex: 1; min-width: 100px;" placeholder="Quantity" min="1">
+                    <button onclick="addStock()" class="btn" style="background:var(--primary); color:white;">Update Stock</button>
                 </div>
             </div>
             <div class="card">
-                <h3>Inventory Status</h3>
-                <table id="stock-table">
-                    <thead><tr><th>Product Name</th><th>Stock Level</th><th>Status</th></tr></thead>
+                <h3 style="margin-top:0;">Inventory Status</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Stock Level</th>
+                            <th>Status</th>
+                            <th width="80" class="no-print">Action</th>
+                        </tr>
+                    </thead>
                     <tbody id="stock-body"></tbody>
                 </table>
             </div>
         </div>
 
+        <!-- TAB: HISTORY -->
         <div id="tab-his" style="display: none;">
             <div class="card no-print" style="background: #eef2ff; border: 1px solid #c7d2fe;">
-                <h4>Data Backup & Migration</h4>
-                <p style="font-size: 12px; margin-bottom: 15px;">Transfer your data to another PC or save a safety copy.</p>
-                <div style="display:flex; gap:10px;">
+                <h4 style="margin-top:0; color:#3730a3;">Data Backup & Migration</h4>
+                <p style="font-size: 12px; margin-bottom: 12px; color: #4338ca;">Safely transfer your billing data to another device or backup locally.</p>
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
                     <button onclick="exportData()" class="btn" style="background:var(--primary); color:white;">💾 Download Backup</button>
                     <button onclick="document.getElementById('import-file').click()" class="btn" style="background:var(--brand); color:white;">📂 Restore Data</button>
                     <input type="file" id="import-file" style="display:none" accept=".json" onchange="importData(event)">
                 </div>
             </div>
 
-            <input type="text" id="search-bar" class="input-f" placeholder="Search by Invoice No, Name, or Phone..." oninput="search()">
+            <input type="text" id="search-bar" class="input-f" placeholder="Search by Invoice No, Name, or Phone..." oninput="search()" style="margin-bottom: 15px;">
             <div id="his-list"></div>
         </div>
     </div>
@@ -192,7 +248,7 @@
         let currentUser = "";
         let db = { invs: [], stk: {} };
 
-        // --- AUTHENTICATION & LOGIN SYSTEM ---
+        // --- AUTHENTICATION SYSTEM ---
         window.onload = function() {
             checkRememberedUser();
         };
@@ -279,6 +335,7 @@
         function launchDashboard() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
+            document.getElementById('user-display').innerText = currentUser;
             loadDb();
             resetInv();
         }
@@ -288,12 +345,12 @@
             location.reload();
         }
 
-        // --- BACKUP FUNCTIONS ---
+        // --- BACKUP & MIGRATION ---
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
             const downloadAnchorNode = document.createElement('a');
             downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "shahin_mobi_backup_" + new Date().toLocaleDateString() + ".json");
+            downloadAnchorNode.setAttribute("download", `shahin_mobi_backup_${currentUser}_` + new Date().toISOString().slice(0,10) + ".json");
             document.body.appendChild(downloadAnchorNode);
             downloadAnchorNode.click();
             downloadAnchorNode.remove();
@@ -306,8 +363,10 @@
             reader.onload = function(e) {
                 try {
                     const importedDb = JSON.parse(e.target.result);
-                    if (confirm("Restore this backup? This will replace all current data on this PC.")) {
+                    if (confirm("Restore this backup? This will overwrite the database for account: " + currentUser)) {
                         db = importedDb;
+                        if(!db.stk) db.stk = {};
+                        if(!db.invs) db.invs = [];
                         saveDb();
                         loadDb();
                         alert("Data restored successfully!");
@@ -319,6 +378,7 @@
             reader.readAsText(file);
         }
 
+        // --- TAB NAVIGATION ---
         function showTab(t) {
             ['bill', 'stock', 'his'].forEach(tab => {
                 document.getElementById('tab-' + tab).style.display = t === tab ? 'block' : 'none';
@@ -327,50 +387,77 @@
             if(t === 'stock') renderStock();
         }
 
-        // STOCK LOGIC
+        // --- INVENTORY LOGIC ---
         function addStock() {
-            const n = document.getElementById('sk-name').value.toUpperCase();
+            const n = document.getElementById('sk-name').value.trim().toUpperCase();
             const q = parseInt(document.getElementById('sk-qty').value);
-            if(!n || isNaN(q)) return;
+            if(!n || isNaN(q) || q <= 0) return alert("Enter valid product name and quantity.");
+            
             db.stk[n] = (db.stk[n] || 0) + q;
-            saveDb(); renderStock();
-            document.getElementById('sk-name').value = ""; document.getElementById('sk-qty').value = "";
+            saveDb(); 
+            renderStock();
+            document.getElementById('sk-name').value = ""; 
+            document.getElementById('sk-qty').value = "";
         }
 
-        function renderStock() {
-            const b = document.getElementById('stock-body'); b.innerHTML = "";
-            for(let item in db.stk) {
-                const q = db.stk[item];
-                b.innerHTML += `<tr><td>${item}</td><td>${q}</td>
-                <td style="color:${q < 5 ? 'red' : 'green'}">${q < 5 ? 'Low' : 'Available'}</td></tr>`;
+        function deleteStockItem(item) {
+            if(confirm(`Remove "${item}" from stock inventory?`)) {
+                delete db.stk[item];
+                saveDb();
+                renderStock();
             }
         }
 
-        // BILLING LOGIC
+        function renderStock() {
+            const b = document.getElementById('stock-body'); 
+            b.innerHTML = "";
+            const items = Object.keys(db.stk);
+            if(items.length === 0) {
+                b.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">No stock items added yet.</td></tr>`;
+                return;
+            }
+            items.forEach(item => {
+                const q = db.stk[item];
+                b.innerHTML += `<tr>
+                    <td><strong>${item}</strong></td>
+                    <td>${q}</td>
+                    <td style="color:${q < 3 ? 'red' : 'green'}; font-weight:bold;">${q < 3 ? 'Low Stock' : 'Available'}</td>
+                    <td class="no-print"><button onclick="deleteStockItem('${item}')" class="btn-del">Delete</button></td>
+                </tr>`;
+            });
+        }
+
+        // --- BILLING LOGIC ---
         function addBillRow(n="", q=1, p=0) {
             const r = document.getElementById('bill-items').insertRow();
             r.innerHTML = `
-                <td><input type="text" class="cell-input p-n" value="${n}" placeholder="Item Name"></td>
-                <td><input type="number" class="cell-input p-q" value="${q}" oninput="calc()"></td>
-                <td><input type="number" class="cell-input p-p" value="${p}" oninput="calc()"></td>
-                <td class="p-t" style="text-align:right; font-weight:bold">${(q*p).toFixed(2)}</td>`;
+                <td><input type="text" class="cell-input p-n" value="${n}" placeholder="Item Description"></td>
+                <td><input type="number" class="cell-input p-q" value="${q}" min="1" oninput="calc()"></td>
+                <td><input type="number" class="cell-input p-p" value="${p}" min="0" oninput="calc()"></td>
+                <td class="p-t" style="text-align:right; font-weight:bold">${(q*p).toFixed(2)}</td>
+                <td class="no-print" style="text-align:center;"><button onclick="this.closest('tr').remove(); calc();" style="border:none; background:none; color:red; cursor:pointer; font-weight:bold;">×</button></td>`;
             calc();
         }
 
         function calc() {
             let total = 0;
             document.querySelectorAll('#bill-items tr').forEach(r => {
-                const q = r.querySelector('.p-q').value;
-                const p = r.querySelector('.p-p').value;
+                const q = parseFloat(r.querySelector('.p-q').value) || 0;
+                const p = parseFloat(r.querySelector('.p-p').value) || 0;
                 const t = q * p;
                 r.querySelector('.p-t').innerText = t.toFixed(2);
                 total += t;
             });
-            const paid = parseFloat(document.getElementById('paid-amt').value) || 0;
+            const paidInput = document.getElementById('paid-amt');
+            let paid = parseFloat(paidInput.value);
+            if(isNaN(paid) || paid < 0) paid = 0;
+
+            const pending = Math.max(0, total - paid);
+
             document.getElementById('g-total').innerText = total.toFixed(2);
-            document.getElementById('pend-amt').innerText = (total - paid).toFixed(2);
+            document.getElementById('pend-amt').innerText = pending.toFixed(2);
             document.getElementById('pr-paid').innerText = paid.toFixed(2);
-            document.getElementById('pr-pend').innerText = (total - paid).toFixed(2);
+            document.getElementById('pr-pend').innerText = pending.toFixed(2);
         }
 
         function resetInv() {
@@ -382,38 +469,64 @@
             document.getElementById('c-name').value = "";
             document.getElementById('c-phone').value = "";
             addBillRow();
+            calc();
         }
 
         function saveAndPrint() {
-            document.getElementById('print-payment').style.display = 'block';
+            const rows = document.querySelectorAll('#bill-items tr');
+            if(rows.length === 0) return alert("Please add at least one item.");
+
             const items = [];
-            document.querySelectorAll('#bill-items tr').forEach(r => {
-                const name = r.querySelector('.p-n').value.toUpperCase();
-                const qty = parseInt(r.querySelector('.p-q').value);
-                items.push({ n: name, q: qty, p: r.querySelector('.p-p').value });
-                if(db.stk[name]) db.stk[name] -= qty;
+            let valid = false;
+
+            rows.forEach(r => {
+                const name = r.querySelector('.p-n').value.trim().toUpperCase();
+                const qty = parseInt(r.querySelector('.p-q').value) || 0;
+                const price = parseFloat(r.querySelector('.p-p').value) || 0;
+
+                if(name && qty > 0) {
+                    valid = true;
+                    items.push({ n: name, q: qty, p: price });
+                    // Auto deduct stock if item exists
+                    if(db.stk[name] !== undefined) {
+                        db.stk[name] -= qty;
+                    }
+                }
             });
+
+            if(!valid) return alert("Please enter valid item description and quantity.");
 
             const invoice = {
                 no: document.getElementById('inv-no').innerText,
                 date: document.getElementById('cur-date').innerText,
-                name: document.getElementById('c-name').value,
-                phone: document.getElementById('c-phone').value,
+                name: document.getElementById('c-name').value.trim(),
+                phone: document.getElementById('c-phone').value.trim(),
                 items: items,
                 total: document.getElementById('g-total').innerText,
                 paid: document.getElementById('paid-amt').value,
                 pending: document.getElementById('pend-amt').innerText
             };
 
-            db.invs.push(invoice);
-            saveDb(); loadDb();
+            // Check if replacing preview invoice or adding new
+            const existingIdx = db.invs.findIndex(i => i.no === invoice.no);
+            if(existingIdx >= 0) {
+                db.invs[existingIdx] = invoice;
+            } else {
+                db.invs.push(invoice);
+            }
+
+            saveDb(); 
+            loadDb();
+
+            // Prepare for Print
+            document.getElementById('print-payment').style.display = 'block';
             window.print();
             document.getElementById('print-payment').style.display = 'none';
         }
 
-        // HISTORY LOGIC
+        // --- HISTORY LOGIC ---
         function deleteInvoice(idx) {
-            if(confirm("Are you sure you want to delete this invoice?")) {
+            if(confirm("Are you sure you want to delete this invoice record?")) {
                 db.invs.splice(idx, 1);
                 saveDb();
                 loadDb();
@@ -421,18 +534,28 @@
         }
 
         function renderHistory(data) {
-            const list = document.getElementById('his-list'); list.innerHTML = "";
-            data.slice().reverse().forEach((inv, i) => {
-                const realIdx = data.length - 1 - i;
+            const list = document.getElementById('his-list'); 
+            list.innerHTML = "";
+
+            if(data.length === 0) {
+                list.innerHTML = `<div class="card" style="text-align:center; color:#64748b;">No matching invoices found.</div>`;
+                return;
+            }
+
+            data.slice().reverse().forEach((inv) => {
+                const realIdx = db.invs.findIndex(i => i.no === inv.no);
                 const isPending = parseFloat(inv.pending) > 0;
-                list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; border-left: 6px solid ${isPending ? 'var(--danger)' : 'var(--success)'}">
-                    <div><strong>#${inv.no}</strong> | ${inv.date}<br><small>${inv.name || 'Walk-in Customer'}</small></div>
+                list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; border-left: 6px solid ${isPending ? 'var(--danger)' : 'var(--success)'}; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <strong>Invoice #${inv.no}</strong> | <small>${inv.date}</small><br>
+                        <span style="color:#475569;">${inv.name || 'Walk-in Customer'} ${inv.phone ? '(' + inv.phone + ')' : ''}</span>
+                    </div>
                     <div style="text-align:right">
-                        <span>₹ ${inv.total}</span><br>
-                        <small style="color:${isPending ? 'var(--danger)' : 'var(--success)'}">${isPending ? 'Pending: ₹'+inv.pending : 'Full Paid'}</small>
+                        <strong>₹ ${inv.total}</strong><br>
+                        <small style="color:${isPending ? 'var(--danger)' : 'var(--success)'}; font-weight:bold;">${isPending ? 'Pending: ₹' + inv.pending : 'Fully Paid'}</small>
                     </div>
                     <div>
-                        <button onclick="previewInv(${realIdx})" class="btn btn-tab">View</button>
+                        <button onclick="previewInv(${realIdx})" class="btn btn-tab">View / Edit</button>
                         <button onclick="deleteInvoice(${realIdx})" class="btn-del">Delete</button>
                     </div>
                 </div>`;
@@ -440,8 +563,12 @@
         }
 
         function search() {
-            const q = document.getElementById('search-bar').value.toLowerCase();
-            const filtered = db.invs.filter(i => i.no.includes(q) || i.name.toLowerCase().includes(q) || i.phone.includes(q));
+            const q = document.getElementById('search-bar').value.toLowerCase().trim();
+            const filtered = db.invs.filter(i => 
+                i.no.toLowerCase().includes(q) || 
+                (i.name && i.name.toLowerCase().includes(q)) || 
+                (i.phone && i.phone.includes(q))
+            );
             renderHistory(filtered);
         }
 
@@ -449,22 +576,35 @@
             const v = db.invs[idx];
             document.getElementById('inv-no').innerText = v.no;
             document.getElementById('cur-date').innerText = v.date;
-            document.getElementById('c-name').value = v.name;
-            document.getElementById('c-phone').value = v.phone;
-            document.getElementById('paid-amt').value = v.paid;
+            document.getElementById('c-name').value = v.name || "";
+            document.getElementById('c-phone').value = v.phone || "";
+            document.getElementById('paid-amt').value = v.paid || 0;
             document.getElementById('bill-items').innerHTML = "";
             v.items.forEach(it => addBillRow(it.n, it.q, it.p));
+            calc();
             showTab('bill');
         }
 
-        function saveDb() { localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db)); }
+        // --- STORAGE MANAGEMENT ---
+        function saveDb() { 
+            if(currentUser) {
+                localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db)); 
+            }
+        }
+
         function loadDb() {
+            if(!currentUser) return;
             const stored = localStorage.getItem('shahin_master_' + currentUser);
-            if(stored) db = JSON.parse(stored);
+            if(stored) {
+                db = JSON.parse(stored);
+                if(!db.stk) db.stk = {};
+                if(!db.invs) db.invs = [];
+            } else {
+                db = { invs: [], stk: {} };
+            }
             document.getElementById('bill-counter').innerText = db.invs.length;
             renderHistory(db.invs);
         }
     </script>
 </body>
 </html>
- 
