@@ -18,7 +18,7 @@
         * { box-sizing: border-box; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
         
-        /* Login & Auth Pages */
+        /* Auth Screen Styling */
         #auth-screen { 
             max-width: 420px; 
             margin: 60px auto; 
@@ -58,18 +58,16 @@
         .shop-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px; }
         .shop-name { font-family: 'Cinzel', serif; font-size: 38px; margin: 0; color: #000; text-transform: uppercase; letter-spacing: 2px; }
         
-        /* Table Controls */
+        /* Tables */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; z-index: 1; position: relative; }
         th { background: #f8fafc; border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
         td { border: 1px solid #000; padding: 8px; }
         .cell-input { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-family: inherit; }
 
-        /* History & Stock UI */
         .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .auth-block { margin-top: 80px; text-align: right; }
         .auth-line { display: inline-block; border-top: 1px solid #000; width: 240px; padding-top: 8px; font-weight: bold; text-align: center; font-size: 14px; }
 
-        /* Delete Button in History */
         .btn-del { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn-del:hover { background: #f87171; color: white; }
 
@@ -83,7 +81,7 @@
 </head>
 <body>
 
-    <!-- AUTH SCREEN (LOGIN & REGISTER) -->
+    <!-- AUTH SCREEN -->
     <div id="auth-screen">
         <h1 style="font-family: 'Cinzel', serif; margin:0; letter-spacing: 1px;">SHAHIN</h1>
         <p style="margin-top:2px; color:#64748b; letter-spacing:3px; font-size: 11px; font-weight: 700;">MOBI TECH PORTAL</p>
@@ -91,7 +89,7 @@
         <!-- LOGIN SECTION -->
         <div id="login-section" style="margin-top: 25px;">
             <h3 style="margin-bottom: 15px; color: #334155;">Login to Account</h3>
-            <input type="tel" id="login-phone" class="input-f" placeholder="Mobile Number">
+            <input type="tel" id="login-phone" class="input-f" placeholder="Mobile Number (e.g. 7086992870)">
             <input type="password" id="login-pass" class="input-f" placeholder="Password">
             
             <div class="checkbox-container">
@@ -99,7 +97,7 @@
                 <label for="remember-me">Remember Login Details</label>
             </div>
             
-            <button onclick="login()" class="btn" style="background:var(--brand); color:white; width:100%; margin-top: 10px; padding: 12px;">Enter Dashboard</button>
+            <button id="login-btn" onclick="login()" class="btn" style="background:var(--brand); color:white; width:100%; margin-top: 10px; padding: 12px;">Enter Dashboard</button>
             <span class="auth-toggle-link" onclick="toggleAuth('register')">New User? Register Here</span>
         </div>
 
@@ -107,18 +105,16 @@
         <div id="register-section" class="hidden" style="margin-top: 25px;">
             <h3 style="margin-bottom: 15px; color: #334155;">Create Account</h3>
             
-            <!-- Step 1: Input Mobile & Password -->
             <div id="reg-step-1">
                 <input type="tel" id="reg-phone" class="input-f" placeholder="Mobile Number">
                 <input type="password" id="reg-pass" class="input-f" placeholder="Set Password">
                 <button onclick="sendOTP()" class="btn" style="background:var(--primary); color:white; width:100%; margin-top: 10px; padding: 12px;">Send OTP</button>
             </div>
 
-            <!-- Step 2: Verify OTP -->
             <div id="reg-step-2" class="hidden">
                 <p style="font-size: 13px; color: #64748b;">OTP sent! Enter default OTP <strong style="color:var(--primary)">1234</strong></p>
                 <input type="text" id="reg-otp" class="input-f" placeholder="Enter 4-Digit OTP" maxlength="4" style="text-align: center; letter-spacing: 4px; font-weight: bold;">
-                <button onclick="verifyAndRegister()" class="btn" style="background:var(--success); color:white; width:100%; margin-top: 10px; padding: 12px;">Verify & Register</button>
+                <button id="reg-btn" onclick="verifyAndRegister()" class="btn" style="background:var(--success); color:white; width:100%; margin-top: 10px; padding: 12px;">Verify & Register</button>
             </div>
 
             <span class="auth-toggle-link" onclick="toggleAuth('login')">Already have an account? Login</span>
@@ -183,7 +179,6 @@
                         Pending: <strong>₹ <span id="pend-amt">0.00</span></strong>
                     </div>
 
-                    <!-- Print-only View for Payment -->
                     <div id="print-payment" style="display:none; font-size: 14px; border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
                         <div>Paid Amount: ₹ <span id="pr-paid">0.00</span></div>
                         <div>Pending Amount: ₹ <span id="pr-pend">0.00</span></div>
@@ -244,27 +239,24 @@
         </div>
     </div>
 
-    <!-- FIREBASE SDK (MODULAR V10) -->
+    <!-- FIREBASE SDK (MODULAR V10) WITH CORRECT ASIA DATABASE URL -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAuwRNsopyI-AJ0YWtJeBcU0cqBdue39Vo",
             authDomain: "shahin-mobi-tech.firebaseapp.com",
-            databaseURL: "https://shahin-mobi-tech-default-rtdb.firebaseio.com",
+            databaseURL: "https://shahin-mobi-tech-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "shahin-mobi-tech",
             storageBucket: "shahin-mobi-tech.firebasestorage.app",
             messagingSenderId: "904762916388",
             appId: "1:904762916388:web:bde750edfa4a87fcd022b1"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const firebaseDb = getDatabase(app);
 
-        // Make Database Ref Accessible Globally
         window.firebaseDb = firebaseDb;
         window.fbRef = ref;
         window.fbSet = set;
@@ -277,7 +269,6 @@
         let currentUser = "";
         let db = { invs: [], stk: {} };
 
-        // --- AUTHENTICATION SYSTEM ---
         window.onload = function() {
             checkRememberedUser();
         };
@@ -292,71 +283,98 @@
             }
         }
 
-        function getUsers() {
-            return JSON.parse(localStorage.getItem('shahin_registered_users') || '{}');
-        }
-
         function sendOTP() {
             const phone = document.getElementById('reg-phone').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
 
-            if (phone.length < 10) return alert("Please enter a valid 10-digit Mobile Number.");
+            if (phone.length < 10) return alert("Please enter a valid Mobile Number.");
             if (pass.length < 4) return alert("Password must be at least 4 characters.");
-
-            const users = getUsers();
-            if (users[phone]) return alert("Mobile number already registered! Please login.");
 
             document.getElementById('reg-step-1').classList.add('hidden');
             document.getElementById('reg-step-2').classList.remove('hidden');
             alert("OTP Sent! Default OTP is 1234");
         }
 
-        function verifyAndRegister() {
+        // FIREBASE CLOUD REGISTER
+        async function verifyAndRegister() {
             const phone = document.getElementById('reg-phone').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
             const otp = document.getElementById('reg-otp').value.trim();
 
             if (otp !== '1234') return alert("Invalid OTP! Enter 1234");
 
-            // Save locally
-            const users = getUsers();
-            users[phone] = pass;
-            localStorage.setItem('shahin_registered_users', JSON.stringify(users));
+            const regBtn = document.getElementById('reg-btn');
+            regBtn.innerText = "Registering...";
+            regBtn.disabled = true;
 
-            // Sync User Credential to Firebase Realtime Database
-            if(window.firebaseDb) {
-                window.fbSet(window.fbRef(window.firebaseDb, 'users/' + phone), { password: pass });
+            try {
+                if(!window.firebaseDb) throw new Error("Firebase DB initialization failed.");
+
+                // Save User Credential directly to Cloud Database
+                await window.fbSet(window.fbRef(window.firebaseDb, 'users/' + phone), { password: pass });
+
+                alert("Account created successfully in Firebase Cloud Database! Please Login now.");
+                document.getElementById('reg-step-2').classList.add('hidden');
+                document.getElementById('reg-step-1').classList.remove('hidden');
+                document.getElementById('login-phone').value = phone;
+                document.getElementById('login-pass').value = pass;
+                toggleAuth('login');
+
+            } catch (err) {
+                alert("Cloud Register Error: " + err.message);
+            } finally {
+                regBtn.innerText = "Verify & Register";
+                regBtn.disabled = false;
             }
-
-            alert("Registration Successful! Please login with your password.");
-            document.getElementById('reg-step-2').classList.add('hidden');
-            document.getElementById('reg-step-1').classList.remove('hidden');
-            document.getElementById('reg-phone').value = "";
-            document.getElementById('reg-pass').value = "";
-            document.getElementById('reg-otp').value = "";
-            toggleAuth('login');
         }
 
-        function login() {
+        // FIREBASE CLOUD LOGIN
+        async function login() {
             const phone = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
             const rememberMe = document.getElementById('remember-me').checked;
 
             if (!phone || !pass) return alert("Please enter Mobile Number and Password.");
 
-            const users = getUsers();
-            if (!users[phone]) return alert("Account not found. Please Register first.");
-            if (users[phone] !== pass) return alert("Incorrect Password!");
+            const loginBtn = document.getElementById('login-btn');
+            loginBtn.innerText = "Verifying...";
+            loginBtn.disabled = true;
 
-            currentUser = phone;
+            try {
+                if(!window.firebaseDb) throw new Error("Firebase DB connection failed.");
 
-            if (rememberMe) {
-                localStorage.setItem('shahin_remembered_user', phone);
-            } else {
-                localStorage.removeItem('shahin_remembered_user');
+                // Read User from Firebase Realtime Database
+                const dbRef = window.fbRef(window.firebaseDb);
+                const snapshot = await window.fbGet(window.fbChild(dbRef, `users/${phone}`));
+
+                if (!snapshot.exists()) {
+                    alert("Account '" + phone + "' not found. Please click 'Register Here' to create account first.");
+                    return;
+                }
+
+                const userData = snapshot.val();
+
+                if (userData.password !== pass) {
+                    alert("Incorrect Password!");
+                    return;
+                }
+
+                currentUser = phone;
+
+                if (rememberMe) {
+                    localStorage.setItem('shahin_remembered_user', phone);
+                } else {
+                    localStorage.removeItem('shahin_remembered_user');
+                }
+
+                launchDashboard();
+
+            } catch (err) {
+                alert("Login Error: " + err.message);
+            } finally {
+                loginBtn.innerText = "Enter Dashboard";
+                loginBtn.disabled = false;
             }
-
-            launchDashboard();
         }
 
         function checkRememberedUser() {
@@ -372,7 +390,6 @@
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-display').innerText = currentUser;
             
-            // Sync with Firebase Realtime Listener
             setupFirebaseRealtime();
             loadDb();
             resetInv();
@@ -383,20 +400,17 @@
             location.reload();
         }
 
-        // --- REALTIME FIREBASE SYNC ---
         function setupFirebaseRealtime() {
             if(!window.firebaseDb || !currentUser) return;
             
             const userDbRef = window.fbRef(window.firebaseDb, 'app_data/' + currentUser);
             
-            // Listen for Realtime Changes from Firebase Database
             window.fbOnValue(userDbRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     db = data;
                     if(!db.stk) db.stk = {};
                     if(!db.invs) db.invs = [];
-                    // Keep LocalStorage in sync with Cloud Data
                     localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db));
                     document.getElementById('bill-counter').innerText = db.invs.length;
                     renderHistory(db.invs);
@@ -407,7 +421,6 @@
             });
         }
 
-        // --- BACKUP & MIGRATION ---
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
             const downloadAnchorNode = document.createElement('a');
@@ -425,22 +438,21 @@
             reader.onload = function(e) {
                 try {
                     const importedDb = JSON.parse(e.target.result);
-                    if (confirm("Restore this backup? This will overwrite the database for account: " + currentUser)) {
+                    if (confirm("Restore backup for " + currentUser + "?")) {
                         db = importedDb;
                         if(!db.stk) db.stk = {};
                         if(!db.invs) db.invs = [];
                         saveDb();
                         loadDb();
-                        alert("Data restored successfully!");
+                        alert("Data restored!");
                     }
                 } catch (err) {
-                    alert("Error: Invalid backup file.");
+                    alert("Invalid backup file.");
                 }
             };
             reader.readAsText(file);
         }
 
-        // --- TAB NAVIGATION ---
         function showTab(t) {
             ['bill', 'stock', 'his'].forEach(tab => {
                 document.getElementById('tab-' + tab).style.display = t === tab ? 'block' : 'none';
@@ -449,7 +461,6 @@
             if(t === 'stock') renderStock();
         }
 
-        // --- INVENTORY LOGIC ---
         function addStock() {
             const n = document.getElementById('sk-name').value.trim().toUpperCase();
             const q = parseInt(document.getElementById('sk-qty').value);
@@ -463,7 +474,7 @@
         }
 
         function deleteStockItem(item) {
-            if(confirm(`Remove "${item}" from stock inventory?`)) {
+            if(confirm(`Remove "${item}"?`)) {
                 delete db.stk[item];
                 saveDb();
                 renderStock();
@@ -489,7 +500,6 @@
             });
         }
 
-        // --- BILLING LOGIC ---
         function addBillRow(n="", q=1, p=0) {
             const r = document.getElementById('bill-items').insertRow();
             r.innerHTML = `
@@ -549,14 +559,13 @@
                 if(name && qty > 0) {
                     valid = true;
                     items.push({ n: name, q: qty, p: price });
-                    // Auto deduct stock if item exists
                     if(db.stk[name] !== undefined) {
                         db.stk[name] -= qty;
                     }
                 }
             });
 
-            if(!valid) return alert("Please enter valid item description and quantity.");
+            if(!valid) return alert("Please enter valid item description.");
 
             const invoice = {
                 no: document.getElementById('inv-no').innerText,
@@ -569,7 +578,6 @@
                 pending: document.getElementById('pend-amt').innerText
             };
 
-            // Check if replacing preview invoice or adding new
             const existingIdx = db.invs.findIndex(i => i.no === invoice.no);
             if(existingIdx >= 0) {
                 db.invs[existingIdx] = invoice;
@@ -580,15 +588,13 @@
             saveDb(); 
             loadDb();
 
-            // Prepare for Print
             document.getElementById('print-payment').style.display = 'block';
             window.print();
             document.getElementById('print-payment').style.display = 'none';
         }
 
-        // --- HISTORY LOGIC ---
         function deleteInvoice(idx) {
-            if(confirm("Are you sure you want to delete this invoice record?")) {
+            if(confirm("Delete this invoice?")) {
                 db.invs.splice(idx, 1);
                 saveDb();
                 loadDb();
@@ -647,13 +653,9 @@
             showTab('bill');
         }
 
-        // --- STORAGE MANAGEMENT ---
         function saveDb() { 
             if(currentUser) {
-                // Save locally
                 localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db)); 
-                
-                // Realtime Sync to Firebase Cloud
                 if(window.firebaseDb) {
                     window.fbSet(window.fbRef(window.firebaseDb, 'app_data/' + currentUser), db);
                 }
