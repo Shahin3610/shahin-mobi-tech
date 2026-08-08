@@ -244,6 +244,35 @@
         </div>
     </div>
 
+    <!-- FIREBASE SDK (MODULAR V10) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAuwRNsopyI-AJ0YWtJeBcU0cqBdue39Vo",
+            authDomain: "shahin-mobi-tech.firebaseapp.com",
+            databaseURL: "https://shahin-mobi-tech-default-rtdb.firebaseio.com",
+            projectId: "shahin-mobi-tech",
+            storageBucket: "shahin-mobi-tech.firebasestorage.app",
+            messagingSenderId: "904762916388",
+            appId: "1:904762916388:web:bde750edfa4a87fcd022b1"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const firebaseDb = getDatabase(app);
+
+        // Make Database Ref Accessible Globally
+        window.firebaseDb = firebaseDb;
+        window.fbRef = ref;
+        window.fbSet = set;
+        window.fbOnValue = onValue;
+        window.fbGet = get;
+        window.fbChild = child;
+    </script>
+
     <script>
         let currentUser = "";
         let db = { invs: [], stk: {} };
@@ -289,9 +318,15 @@
 
             if (otp !== '1234') return alert("Invalid OTP! Enter 1234");
 
+            // Save locally
             const users = getUsers();
             users[phone] = pass;
             localStorage.setItem('shahin_registered_users', JSON.stringify(users));
+
+            // Sync User Credential to Firebase Realtime Database
+            if(window.firebaseDb) {
+                window.fbSet(window.fbRef(window.firebaseDb, 'users/' + phone), { password: pass });
+            }
 
             alert("Registration Successful! Please login with your password.");
             document.getElementById('reg-step-2').classList.add('hidden');
@@ -336,6 +371,9 @@
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-display').innerText = currentUser;
+            
+            // Sync with Firebase Realtime Listener
+            setupFirebaseRealtime();
             loadDb();
             resetInv();
         }
@@ -343,6 +381,30 @@
         function logout() {
             localStorage.removeItem('shahin_remembered_user');
             location.reload();
+        }
+
+        // --- REALTIME FIREBASE SYNC ---
+        function setupFirebaseRealtime() {
+            if(!window.firebaseDb || !currentUser) return;
+            
+            const userDbRef = window.fbRef(window.firebaseDb, 'app_data/' + currentUser);
+            
+            // Listen for Realtime Changes from Firebase Database
+            window.fbOnValue(userDbRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    db = data;
+                    if(!db.stk) db.stk = {};
+                    if(!db.invs) db.invs = [];
+                    // Keep LocalStorage in sync with Cloud Data
+                    localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db));
+                    document.getElementById('bill-counter').innerText = db.invs.length;
+                    renderHistory(db.invs);
+                    if(document.getElementById('tab-stock').style.display === 'block') {
+                        renderStock();
+                    }
+                }
+            });
         }
 
         // --- BACKUP & MIGRATION ---
@@ -588,7 +650,13 @@
         // --- STORAGE MANAGEMENT ---
         function saveDb() { 
             if(currentUser) {
+                // Save locally
                 localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db)); 
+                
+                // Realtime Sync to Firebase Cloud
+                if(window.firebaseDb) {
+                    window.fbSet(window.fbRef(window.firebaseDb, 'app_data/' + currentUser), db);
+                }
             }
         }
 
