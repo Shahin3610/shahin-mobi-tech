@@ -3,74 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHAHIN MOBI TECH | Master Portal</title>
+    <title>SHAHIN MOBI TECH | Cloud Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root { 
             --brand: #1a1a1a; 
             --primary: #2563eb; 
-            --primary-hover: #1d4ed8;
             --danger: #e11d48; 
             --success: #10b981; 
             --bg: #f8fafc; 
         }
-        
         * { box-sizing: border-box; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
-        
-        /* Auth Screen Styling */
-        #auth-screen { 
-            max-width: 420px; 
-            margin: 60px auto; 
-            background: white; 
-            padding: 40px; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
-            text-align: center; 
-        }
-        .input-f { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 8px 0; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 8px; 
-            font-size: 15px; 
-            outline: none;
-            transition: border 0.2s;
-        }
+        #auth-screen { max-width: 420px; margin: 60px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); text-align: center; }
+        .input-f { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
         .input-f:focus { border-color: var(--primary); }
         .auth-toggle-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; margin-top: 15px; display: inline-block; font-size: 14px; }
         .checkbox-container { text-align: left; margin: 10px 0; font-size: 14px; color: #475569; display: flex; align-items: center; gap: 8px; }
         .hidden { display: none !important; }
-        
-        /* Navigation */
         #main-app { display: none; max-width: 1100px; margin: auto; }
         .nav-bar { display: flex; gap: 10px; margin-bottom: 25px; background: white; padding: 15px; border-radius: 12px; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex-wrap: wrap; }
         .btn { padding: 10px 18px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
         .btn:hover { opacity: 0.9; }
         .btn-tab { background: #f1f5f9; color: #475569; }
         .btn-tab.active { background: var(--primary); color: white; }
-
-        /* Invoice Sheet Styling */
         .invoice-sheet { background: white; width: 100%; max-width: 800px; margin: auto; padding: 40px; position: relative; min-height: 1000px; box-shadow: 0 0 30px rgba(0,0,0,0.08); border-radius: 8px; }
         .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 55px; color: rgba(0,0,0,0.03); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel', serif; width: 100%; text-align: center; white-space: nowrap; }
-        
         .shop-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px; }
         .shop-name { font-family: 'Cinzel', serif; font-size: 38px; margin: 0; color: #000; text-transform: uppercase; letter-spacing: 2px; }
-        
-        /* Tables */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; z-index: 1; position: relative; }
         th { background: #f8fafc; border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
         td { border: 1px solid #000; padding: 8px; }
         .cell-input { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-family: inherit; }
-
         .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
         .auth-block { margin-top: 80px; text-align: right; }
         .auth-line { display: inline-block; border-top: 1px solid #000; width: 240px; padding-top: 8px; font-weight: bold; text-align: center; font-size: 14px; }
-
-        .btn-del { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .btn-del:hover { background: #f87171; color: white; }
-
+        .btn-del { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
         @media print {
             .no-print { display: none !important; }
             body { background: white; padding: 0; margin: 0; }
@@ -89,7 +57,7 @@
         <!-- LOGIN SECTION -->
         <div id="login-section" style="margin-top: 25px;">
             <h3 style="margin-bottom: 15px; color: #334155;">Login to Account</h3>
-            <input type="tel" id="login-phone" class="input-f" placeholder="Mobile Number (e.g. 7086992870)">
+            <input type="tel" id="login-phone" class="input-f" placeholder="Mobile Number">
             <input type="password" id="login-pass" class="input-f" placeholder="Password">
             
             <div class="checkbox-container">
@@ -171,7 +139,6 @@
 
                 <div style="text-align: right; margin-top: 30px; font-size: 16px;">
                     <div style="margin-bottom: 8px;">Grand Total: <strong>₹ <span id="g-total">0.00</span></strong></div>
-                    
                     <div class="no-print" style="color:var(--success); margin-bottom: 6px;">
                         Paid: ₹ <input type="number" id="paid-amt" value="0" oninput="calc()" style="width:100px; text-align:right; font-weight:bold; padding:4px;" min="0">
                     </div>
@@ -201,7 +168,7 @@
             <div class="card">
                 <h3 style="margin-top:0;">Add / Update Stock (Stock In)</h3>
                 <div style="display:flex; gap:10px; flex-wrap: wrap;">
-                    <input type="text" id="sk-name" class="input-f" style="margin:0; flex: 2; min-width: 200px;" placeholder="Product Name (e.g. POCO M6 DISPLAY)">
+                    <input type="text" id="sk-name" class="input-f" style="margin:0; flex: 2; min-width: 200px;" placeholder="Product Name">
                     <input type="number" id="sk-qty" class="input-f" style="margin:0; flex: 1; min-width: 100px;" placeholder="Quantity" min="1">
                     <button onclick="addStock()" class="btn" style="background:var(--primary); color:white;">Update Stock</button>
                 </div>
@@ -224,22 +191,15 @@
 
         <!-- TAB: HISTORY -->
         <div id="tab-his" style="display: none;">
-            <div class="card no-print" style="background: #eef2ff; border: 1px solid #c7d2fe;">
-                <h4 style="margin-top:0; color:#3730a3;">Data Backup & Migration</h4>
-                <p style="font-size: 12px; margin-bottom: 12px; color: #4338ca;">Safely transfer your billing data to another device or backup locally.</p>
-                <div style="display:flex; gap:10px; flex-wrap: wrap;">
-                    <button onclick="exportData()" class="btn" style="background:var(--primary); color:white;">💾 Download Backup</button>
-                    <button onclick="document.getElementById('import-file').click()" class="btn" style="background:var(--brand); color:white;">📂 Restore Data</button>
-                    <input type="file" id="import-file" style="display:none" accept=".json" onchange="importData(event)">
-                </div>
-            </div>
-
             <input type="text" id="search-bar" class="input-f" placeholder="Search by Invoice No, Name, or Phone..." oninput="search()" style="margin-bottom: 15px;">
             <div id="his-list"></div>
         </div>
     </div>
 
     <script>
+        // FIREBASE CLOUD REALTIME DATABASE URL (Fixed Region)
+        const DB_BASE_URL = "https://shahin-mobi-tech-default-rtdb.asia-southeast1.firebasedatabase.app";
+
         let currentUser = "";
         let db = { invs: [], stk: {} };
 
@@ -260,17 +220,15 @@
         function sendOTP() {
             const phone = document.getElementById('reg-phone').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
-
             if (phone.length < 10) return alert("Please enter a valid Mobile Number.");
             if (pass.length < 4) return alert("Password must be at least 4 characters.");
-
             document.getElementById('reg-step-1').classList.add('hidden');
             document.getElementById('reg-step-2').classList.remove('hidden');
             alert("OTP Sent! Default OTP is 1234");
         }
 
-        // LOCAL STORAGE REGISTER (FAST & ZERO NETWORK ERROR)
-        function verifyAndRegister() {
+        // FIREBASE REGISTRATION (Any Device)
+        async function verifyAndRegister() {
             const rawPhone = document.getElementById('reg-phone').value.trim();
             const phone = rawPhone.replace(/[^0-9]/g, '');
             const pass = document.getElementById('reg-pass').value.trim();
@@ -279,20 +237,35 @@
             if (otp !== '1234') return alert("Invalid OTP! Enter 1234");
             if (phone.length < 10) return alert("Enter valid 10-digit Phone Number");
 
-            let users = JSON.parse(localStorage.getItem('shahin_users') || '{}');
-            users[phone] = { password: pass };
-            localStorage.setItem('shahin_users', JSON.stringify(users));
+            const regBtn = document.getElementById('reg-btn');
+            regBtn.innerText = "Registering...";
+            regBtn.disabled = true;
 
-            alert("Registration Successful! Please login.");
-            document.getElementById('reg-step-2').classList.add('hidden');
-            document.getElementById('reg-step-1').classList.remove('hidden');
-            document.getElementById('login-phone').value = phone;
-            document.getElementById('login-pass').value = pass;
-            toggleAuth('login');
+            try {
+                const res = await fetch(`${DB_BASE_URL}/users/${phone}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pass, createdAt: new Date().toISOString() })
+                });
+
+                if(!res.ok) throw new Error("Cloud network error");
+
+                alert("Registration Successful! Please login.");
+                document.getElementById('reg-step-2').classList.add('hidden');
+                document.getElementById('reg-step-1').classList.remove('hidden');
+                document.getElementById('login-phone').value = phone;
+                document.getElementById('login-pass').value = pass;
+                toggleAuth('login');
+            } catch(err) {
+                alert("Registration Failed: " + err.message);
+            } finally {
+                regBtn.innerText = "Verify & Register";
+                regBtn.disabled = false;
+            }
         }
 
-        // LOCAL STORAGE LOGIN
-        function login() {
+        // FIREBASE CLOUD LOGIN (Any Device)
+        async function login() {
             const rawPhone = document.getElementById('login-phone').value.trim();
             const phone = rawPhone.replace(/[^0-9]/g, '');
             const pass = document.getElementById('login-pass').value.trim();
@@ -300,27 +273,35 @@
 
             if (!phone || !pass) return alert("Please enter Mobile Number and Password.");
 
-            let users = JSON.parse(localStorage.getItem('shahin_users') || '{}');
+            const loginBtn = document.getElementById('login-btn');
+            loginBtn.innerText = "Logging in...";
+            loginBtn.disabled = true;
 
-            if (!users[phone]) {
-                alert("Account not found! Click 'New User? Register Here' first.");
-                return;
+            try {
+                const res = await fetch(`${DB_BASE_URL}/users/${phone}.json`);
+                const userData = await res.json();
+
+                if (!userData) {
+                    alert("Account not found! Click 'New User? Register Here' first.");
+                    return;
+                }
+
+                if (userData.password !== pass) {
+                    alert("Incorrect Password!");
+                    return;
+                }
+
+                currentUser = phone;
+                if (rememberMe) localStorage.setItem('shahin_remembered_user', phone);
+                else localStorage.removeItem('shahin_remembered_user');
+
+                launchDashboard();
+            } catch(err) {
+                alert("Login Error: " + err.message);
+            } finally {
+                loginBtn.innerText = "Enter Dashboard";
+                loginBtn.disabled = false;
             }
-
-            if (users[phone].password !== pass) {
-                alert("Incorrect Password!");
-                return;
-            }
-
-            currentUser = phone;
-
-            if (rememberMe) {
-                localStorage.setItem('shahin_remembered_user', phone);
-            } else {
-                localStorage.removeItem('shahin_remembered_user');
-            }
-
-            launchDashboard();
         }
 
         function checkRememberedUser() {
@@ -331,12 +312,12 @@
             }
         }
 
-        function launchDashboard() {
+        async function launchDashboard() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-display').innerText = currentUser;
             
-            loadLocalDb();
+            await loadCloudDb();
             resetInv();
         }
 
@@ -345,56 +326,32 @@
             location.reload();
         }
 
-        function saveDb() { 
+        async function saveDb() { 
             if(currentUser) {
-                localStorage.setItem('shahin_master_' + currentUser, JSON.stringify(db)); 
+                await fetch(`${DB_BASE_URL}/data/${currentUser}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(db)
+                });
             }
         }
 
-        function loadLocalDb() {
-            const stored = localStorage.getItem('shahin_master_' + currentUser);
-            if(stored) {
-                db = JSON.parse(stored);
-                if(!db.stk) db.stk = {};
-                if(!db.invs) db.invs = [];
-            } else {
+        async function loadCloudDb() {
+            try {
+                const res = await fetch(`${DB_BASE_URL}/data/${currentUser}.json`);
+                const cloudData = await res.json();
+                if(cloudData) {
+                    db = cloudData;
+                    if(!db.stk) db.stk = {};
+                    if(!db.invs) db.invs = [];
+                } else {
+                    db = { invs: [], stk: {} };
+                }
+            } catch(e) {
                 db = { invs: [], stk: {} };
             }
             document.getElementById('bill-counter').innerText = db.invs.length;
             renderHistory(db.invs);
-        }
-
-        function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", `shahin_mobi_backup_${currentUser}_` + new Date().toISOString().slice(0,10) + ".json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedDb = JSON.parse(e.target.result);
-                    if (confirm("Restore backup for " + currentUser + "?")) {
-                        db = importedDb;
-                        if(!db.stk) db.stk = {};
-                        if(!db.invs) db.invs = [];
-                        saveDb();
-                        document.getElementById('bill-counter').innerText = db.invs.length;
-                        renderHistory(db.invs);
-                        alert("Data restored!");
-                    }
-                } catch (err) {
-                    alert("Invalid backup file.");
-                }
-            };
-            reader.readAsText(file);
         }
 
         function showTab(t) {
@@ -488,7 +445,7 @@
             calc();
         }
 
-        function saveAndPrint() {
+        async function saveAndPrint() {
             const rows = document.querySelectorAll('#bill-items tr');
             if(rows.length === 0) return alert("Please add at least one item.");
 
@@ -529,7 +486,7 @@
                 db.invs.push(invoice);
             }
 
-            saveDb(); 
+            await saveDb(); 
             document.getElementById('bill-counter').innerText = db.invs.length;
             renderHistory(db.invs);
 
