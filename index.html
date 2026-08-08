@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHAHIN MOBI TECH | Portal</title>
+    <title>SHAHIN MOBI TECH | Cloud Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -197,6 +197,7 @@
     </div>
 
     <script>
+        const DB_URL = "https://shahin-mobi-tech-default-rtdb.asia-southeast1.firebasedatabase.app";
         let currentUser = "";
         let db = { invs: [], stk: {} };
 
@@ -224,8 +225,8 @@
             alert("OTP Sent! Default OTP is 1234");
         }
 
-        // FAST REGISTER (GUARANTEED NO FREEZE)
-        function verifyAndRegister() {
+        // DIRECT FIREBASE REST REGISTER
+        async function verifyAndRegister() {
             const rawPhone = document.getElementById('reg-phone').value.trim();
             const phone = rawPhone.replace(/[^0-9]/g, '');
             const pass = document.getElementById('reg-pass').value.trim();
@@ -234,20 +235,37 @@
             if (otp !== '1234') return alert("Invalid OTP! Enter 1234");
             if (phone.length < 10) return alert("Enter valid 10-digit Phone Number");
 
-            let users = JSON.parse(localStorage.getItem('shahin_users') || '{}');
-            users[phone] = { password: pass, createdAt: new Date().toISOString() };
-            localStorage.setItem('shahin_users', JSON.stringify(users));
+            const regBtn = document.getElementById('reg-btn');
+            regBtn.innerText = "Registering...";
+            regBtn.disabled = true;
 
-            alert("Registration Successful! Please login.");
-            document.getElementById('reg-step-2').classList.add('hidden');
-            document.getElementById('reg-step-1').classList.remove('hidden');
-            document.getElementById('login-phone').value = phone;
-            document.getElementById('login-pass').value = pass;
-            toggleAuth('login');
+            try {
+                const res = await fetch(`${DB_URL}/users/${phone}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pass, createdAt: new Date().toISOString() })
+                });
+
+                if (res.ok) {
+                    alert("Registration Successful! Now you can login from any device.");
+                    document.getElementById('reg-step-2').classList.add('hidden');
+                    document.getElementById('reg-step-1').classList.remove('hidden');
+                    document.getElementById('login-phone').value = phone;
+                    document.getElementById('login-pass').value = pass;
+                    toggleAuth('login');
+                } else {
+                    alert("Cloud Server Error. Please check Firebase Rules.");
+                }
+            } catch (err) {
+                alert("Network Connection Error!");
+            } finally {
+                regBtn.innerText = "Verify & Register";
+                regBtn.disabled = false;
+            }
         }
 
-        // FAST LOGIN
-        function login() {
+        // DIRECT FIREBASE REST LOGIN
+        async function login() {
             const rawPhone = document.getElementById('login-phone').value.trim();
             const phone = rawPhone.replace(/[^0-9]/g, '');
             const pass = document.getElementById('login-pass').value.trim();
@@ -255,24 +273,35 @@
 
             if (!phone || !pass) return alert("Please enter Mobile Number and Password.");
 
-            let users = JSON.parse(localStorage.getItem('shahin_users') || '{}');
-            const userData = users[phone];
+            const loginBtn = document.getElementById('login-btn');
+            loginBtn.innerText = "Logging in...";
+            loginBtn.disabled = true;
 
-            if (!userData) {
-                alert("Account not found! Click 'New User? Register Here' first.");
-                return;
+            try {
+                const res = await fetch(`${DB_URL}/users/${phone}.json`);
+                const userData = await res.json();
+
+                if (!userData) {
+                    alert("Account not found! Click 'New User? Register Here' first.");
+                    return;
+                }
+
+                if (userData.password !== pass) {
+                    alert("Incorrect Password!");
+                    return;
+                }
+
+                currentUser = phone;
+                if (rememberMe) localStorage.setItem('shahin_remembered_user', phone);
+                else localStorage.removeItem('shahin_remembered_user');
+
+                launchDashboard();
+            } catch (err) {
+                alert("Cloud Connection Error! Please check internet.");
+            } finally {
+                loginBtn.innerText = "Enter Dashboard";
+                loginBtn.disabled = false;
             }
-
-            if (userData.password !== pass) {
-                alert("Incorrect Password!");
-                return;
-            }
-
-            currentUser = phone;
-            if (rememberMe) localStorage.setItem('shahin_remembered_user', phone);
-            else localStorage.removeItem('shahin_remembered_user');
-
-            launchDashboard();
         }
 
         function checkRememberedUser() {
@@ -283,12 +312,12 @@
             }
         }
 
-        function launchDashboard() {
+        async function launchDashboard() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             document.getElementById('user-display').innerText = currentUser;
             
-            loadLocalDb();
+            await loadCloudDb();
             resetInv();
         }
 
@@ -297,19 +326,32 @@
             location.reload();
         }
 
-        function saveDb() { 
+        async function saveDb() { 
             if(currentUser) {
-                localStorage.setItem('shahin_db_' + currentUser, JSON.stringify(db));
+                try {
+                    await fetch(`${DB_URL}/data/${currentUser}.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(db)
+                    });
+                } catch(e) {
+                    console.error("Cloud Save Failed", e);
+                }
             }
         }
 
-        function loadLocalDb() {
-            const localData = localStorage.getItem('shahin_db_' + currentUser);
-            if(localData) {
-                db = JSON.parse(localData);
-                if(!db.stk) db.stk = {};
-                if(!db.invs) db.invs = [];
-            } else {
+        async function loadCloudDb() {
+            try {
+                const res = await fetch(`${DB_URL}/data/${currentUser}.json`);
+                const cloudData = await res.json();
+                if(cloudData) {
+                    db = cloudData;
+                    if(!db.stk) db.stk = {};
+                    if(!db.invs) db.invs = [];
+                } else {
+                    db = { invs: [], stk: {} };
+                }
+            } catch(e) {
                 db = { invs: [], stk: {} };
             }
             document.getElementById('bill-counter').innerText = db.invs.length;
