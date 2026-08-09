@@ -35,6 +35,20 @@
             text-align: center; 
         }
 
+        /* ব্র্যান্ড ও লোগো হেডার স্টাইল */
+        .brand-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
         .input-f { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
         .input-f:focus { border-color: var(--primary); }
         .auth-toggle-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; margin-top: 12px; display: inline-block; font-size: 13px; }
@@ -49,8 +63,10 @@
         .invoice-sheet { background: white; width: 100%; max-width: 800px; margin: auto; padding: 40px; position: relative; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px; }
         .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 40px; color: rgba(0,0,0,0.03); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel', serif; width: 100%; text-align: center; white-space: nowrap; }
         
-        /* ছোট শপ হেডার টাইটেল */
-        .shop-header { text-align: left; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 25px; }
+        /* শপ হেডার স্টাইল লোগো সহ */
+        .shop-header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 25px; }
+        .shop-header-flex { display: flex; align-items: center; gap: 12px; }
+        .invoice-logo { width: 50px; height: 50px; object-fit: contain; }
         .shop-name { font-family: 'Cinzel', serif; font-size: 18px; margin: 0; color: #000; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
         .developer-sub { font-size: 10px; color: #64748b; margin: 1px 0 6px 0; font-weight: 500; font-style: italic; }
         .shop-contact-input { width: 100%; border: none; border-bottom: 1px dashed #ccc; outline: none; font-size: 12px; font-family: inherit; margin: 2px 0; background: transparent; }
@@ -75,8 +91,13 @@
 
     <!-- AUTH SCREEN -->
     <div id="auth-screen">
-        <h2 style="font-family: 'Cinzel', serif; margin:0; letter-spacing: 0.5px; font-size: 18px; color: var(--brand);">SHAHIN SHOP MANAGER</h2>
-        <p style="margin-top:2px; color:#2563eb; letter-spacing:1px; font-size: 11px; font-weight: 700;">CLOUD PORTAL</p>
+        <div class="brand-header-flex">
+            <img src="logo.png" alt="SSM Logo" class="brand-logo" onerror="this.style.display='none'">
+            <div>
+                <h2 style="font-family: 'Cinzel', serif; margin:0; letter-spacing: 0.5px; font-size: 18px; color: var(--brand);">SHAHIN SHOP MANAGER</h2>
+                <p style="margin-top:2px; margin-bottom:0; color:#2563eb; letter-spacing:1px; font-size: 11px; font-weight: 700; text-align:left;">CLOUD PORTAL</p>
+            </div>
+        </div>
         
         <!-- LOGIN SECTION -->
         <div id="login-section" style="margin-top: 20px;">
@@ -146,8 +167,13 @@
             <div class="invoice-sheet" id="print-sheet">
                 <div class="watermark">SHAHIN SHOP MANAGER</div>
                 <div class="shop-header">
-                    <h1 class="shop-name" id="inv-shop-title">SHAHIN SHOP MANAGER</h1>
-                    <div class="developer-sub">Developed By Shahin</div>
+                    <div class="shop-header-flex">
+                        <img src="logo.png" alt="SSM Logo" class="invoice-logo" onerror="this.style.display='none'">
+                        <div>
+                            <h1 class="shop-name" id="inv-shop-title">SHAHIN SHOP MANAGER</h1>
+                            <div class="developer-sub">Developed By Shahin</div>
+                        </div>
+                    </div>
                     <input type="text" id="my-address" class="shop-contact-input" placeholder="Your Address (e.g. Nagarbera :: Kamrup :: Assam :: 781127)">
                     <input type="text" id="my-phone" class="shop-contact-input" placeholder="Your Phone Number (e.g. Phone: 7086992870)" style="font-weight: bold;">
                 </div>
@@ -496,7 +522,6 @@
                 db = { invs: [], stk: {}, profile: {} };
             }
 
-            // প্রোফাইল ও ড্যাশবোর্ড আপডেট
             document.getElementById('user-display').innerText = `${currentUserName} (${currentUser})`;
             document.getElementById('prof-owner').value = db.profile.ownerName || currentUserName;
             document.getElementById('prof-shop').value = db.profile.shopName || currentUserShop;
@@ -528,7 +553,6 @@
             document.getElementById('inv-shop-title').innerText = shop;
             document.getElementById('inv-sign-name').innerText = shop;
 
-            // Update user core profile
             await fetch(`${DB_URL}/users/${currentUser}/ownerName.json`, { method: 'PUT', body: JSON.stringify(owner) });
             await fetch(`${DB_URL}/users/${currentUser}/shopName.json`, { method: 'PUT', body: JSON.stringify(shop) });
 
