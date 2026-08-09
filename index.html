@@ -50,16 +50,9 @@
 <body>
 
     <!-- AUTH SCREEN -->
-    #auth-screen { 
-    max-width: 420px; 
-    margin: 60px auto; 
-    background: rgba(255, 255, 255, 0.9); 
-    backdrop-filter: blur(10px);
-    padding: 40px; 
-    border-radius: 16px; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
-    text-align: center; 
-}
+    <div id="auth-screen">
+        <h1 style="font-family: 'Cinzel', serif; margin:0; letter-spacing: 1px;">SHAHIN</h1>
+        <p style="margin-top:2px; color:#64748b; letter-spacing:3px; font-size: 11px; font-weight: 700;">MOBI TECH PORTAL</p>
         
         <!-- LOGIN SECTION -->
         <div id="login-section" style="margin-top: 25px;">
@@ -81,6 +74,7 @@
             <h3 style="margin-bottom: 15px; color: #334155;">Create Account</h3>
             
             <div id="reg-step-1">
+                <input type="text" id="reg-name" class="input-f" placeholder="Your Full Name">
                 <input type="tel" id="reg-phone" class="input-f" placeholder="Mobile Number">
                 <input type="password" id="reg-pass" class="input-f" placeholder="Set Password">
                 <button onclick="sendOTP()" class="btn" style="background:var(--primary); color:white; width:100%; margin-top: 10px; padding: 12px;">Send OTP</button>
@@ -206,6 +200,7 @@
     <script>
         const DB_URL = "https://shahin-mobi-tech-default-rtdb.firebaseio.com";
         let currentUser = "";
+        let currentUserName = "";
         let db = { invs: [], stk: {} };
 
         window.onload = function() {
@@ -223,8 +218,10 @@
         }
 
         function sendOTP() {
+            const name = document.getElementById('reg-name').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
+            if (!name) return alert("Please enter your Full Name.");
             if (phone.length < 10) return alert("Please enter a valid Mobile Number.");
             if (pass.length < 4) return alert("Password must be at least 4 characters.");
             document.getElementById('reg-step-1').classList.add('hidden');
@@ -234,6 +231,7 @@
 
         // DIRECT FIREBASE REST REGISTER
         async function verifyAndRegister() {
+            const name = document.getElementById('reg-name').value.trim();
             const rawPhone = document.getElementById('reg-phone').value.trim();
             const phone = rawPhone.replace(/[^0-9]/g, '');
             const pass = document.getElementById('reg-pass').value.trim();
@@ -250,7 +248,7 @@
                 const res = await fetch(`${DB_URL}/users/${phone}.json`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: pass, createdAt: new Date().toISOString() })
+                    body: JSON.stringify({ name: name, password: pass, createdAt: new Date().toISOString() })
                 });
 
                 if (res.ok) {
@@ -299,8 +297,15 @@
                 }
 
                 currentUser = phone;
-                if (rememberMe) localStorage.setItem('shahin_remembered_user', phone);
-                else localStorage.removeItem('shahin_remembered_user');
+                currentUserName = userData.name || phone;
+
+                if (rememberMe) {
+                    localStorage.setItem('shahin_remembered_user', phone);
+                    localStorage.setItem('shahin_remembered_name', currentUserName);
+                } else {
+                    localStorage.removeItem('shahin_remembered_user');
+                    localStorage.removeItem('shahin_remembered_name');
+                }
 
                 launchDashboard();
             } catch (err) {
@@ -313,8 +318,10 @@
 
         function checkRememberedUser() {
             const savedUser = localStorage.getItem('shahin_remembered_user');
+            const savedName = localStorage.getItem('shahin_remembered_name');
             if (savedUser) {
                 currentUser = savedUser;
+                currentUserName = savedName || savedUser;
                 launchDashboard();
             }
         }
@@ -322,7 +329,7 @@
         async function launchDashboard() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            document.getElementById('user-display').innerText = currentUser;
+            document.getElementById('user-display').innerText = `${currentUserName} (${currentUser})`;
             
             await loadCloudDb();
             resetInv();
@@ -330,6 +337,7 @@
 
         function logout() {
             localStorage.removeItem('shahin_remembered_user');
+            localStorage.removeItem('shahin_remembered_name');
             location.reload();
         }
 
