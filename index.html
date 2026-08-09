@@ -35,7 +35,7 @@
             text-align: center; 
         }
 
-        /* ব্র্যান্ড ও লোগো হেডার স্টাইল */
+        /* ব্র্যান্ড ও লোগো হেডার স্টাইল (লগইন স্ক্রিন) */
         .brand-header-flex {
             display: flex;
             align-items: center;
@@ -63,13 +63,37 @@
         .invoice-sheet { background: white; width: 100%; max-width: 800px; margin: auto; padding: 40px; position: relative; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px; }
         .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 40px; color: rgba(0,0,0,0.03); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel', serif; width: 100%; text-align: center; white-space: nowrap; }
         
-        /* শপ হেডার স্টাইল লোগো সহ */
-        .shop-header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 25px; }
-        .shop-header-flex { display: flex; align-items: center; gap: 12px; }
-        .invoice-logo { width: 50px; height: 50px; object-fit: contain; }
-        .shop-name { font-family: 'Cinzel', serif; font-size: 18px; margin: 0; color: #000; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
-        .developer-sub { font-size: 10px; color: #64748b; margin: 1px 0 6px 0; font-weight: 500; font-style: italic; }
-        .shop-contact-input { width: 100%; border: none; border-bottom: 1px dashed #ccc; outline: none; font-size: 12px; font-family: inherit; margin: 2px 0; background: transparent; }
+        /* শপ হেডার লেআউট - বামে ব্র্যান্ডিং, মাঝখানে ইউজার শপ তথ্য */
+        .shop-header { 
+            position: relative;
+            border-bottom: 2px solid #000; 
+            padding-bottom: 15px; 
+            margin-bottom: 25px; 
+            min-height: 90px;
+        }
+
+        /* বাম পাশের সিস্টেম ব্র্যান্ডিং */
+        .left-branding {
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+        }
+        .invoice-logo { width: 48px; height: 48px; object-fit: contain; }
+        .brand-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #0f172a; margin: 0; line-height: 1.2; }
+        .developer-sub { font-size: 10px; color: #64748b; margin-top: 2px; font-weight: 500; font-style: italic; }
+
+        /* মাঝখানের ইউজারের শপ হেডার */
+        .center-shop-details {
+            width: 60%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .shop-name { font-family: 'Cinzel', serif; font-size: 22px; margin: 0 0 4px 0; color: #000; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; text-align: center; }
+        .shop-contact-input { width: 100%; border: none; border-bottom: 1px dashed #ccc; outline: none; font-size: 13px; font-family: inherit; margin: 2px 0; background: transparent; text-align: center; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 20px; z-index: 1; position: relative; }
         th { background: #f8fafc; border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
@@ -79,6 +103,7 @@
         .auth-block { margin-top: 80px; text-align: right; }
         .auth-line { display: inline-block; border-top: 1px solid #000; width: 220px; padding-top: 8px; font-weight: bold; text-align: center; font-size: 13px; }
         .btn-del { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+        
         @media print {
             .no-print { display: none !important; }
             body { background: white; padding: 0; margin: 0; }
@@ -166,16 +191,24 @@
         <div id="tab-bill">
             <div class="invoice-sheet" id="print-sheet">
                 <div class="watermark">SHAHIN SHOP MANAGER</div>
+                
+                <!-- HEADER (LEFT BRANDING & CENTER SHOP DETAILS) -->
                 <div class="shop-header">
-                    <div class="shop-header-flex">
+                    <!-- LEFT SIDE: LOGO + SHAHIN SHOP MANAGER + DEVELOPED BY SHAHIN -->
+                    <div class="left-branding">
                         <img src="logo.png" alt="SSM Logo" class="invoice-logo" onerror="this.style.display='none'">
                         <div>
-                            <h1 class="shop-name" id="inv-shop-title">SHAHIN SHOP MANAGER</h1>
+                            <div class="brand-title">SHAHIN SHOP MANAGER</div>
                             <div class="developer-sub">Developed By Shahin</div>
                         </div>
                     </div>
-                    <input type="text" id="my-address" class="shop-contact-input" placeholder="Your Address (e.g. Nagarbera :: Kamrup :: Assam :: 781127)">
-                    <input type="text" id="my-phone" class="shop-contact-input" placeholder="Your Phone Number (e.g. Phone: 7086992870)" style="font-weight: bold;">
+
+                    <!-- CENTER SIDE: USER'S SHOP NAME, ADDRESS, PHONE -->
+                    <div class="center-shop-details">
+                        <h1 class="shop-name" id="inv-shop-title">USER SHOP NAME</h1>
+                        <input type="text" id="my-address" class="shop-contact-input" placeholder="Your Address (e.g. Nagarbera :: Kamrup :: Assam :: 781127)">
+                        <input type="text" id="my-phone" class="shop-contact-input" placeholder="Your Phone Number (e.g. Phone: 7086992870)" style="font-weight: bold;">
+                    </div>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; margin-bottom: 25px; gap: 20px;">
@@ -220,7 +253,7 @@
                 </div>
 
                 <div class="auth-block">
-                    <div class="auth-line"><span id="inv-sign-name">SHAHIN SHOP MANAGER</span><br><small style="font-weight: normal;">(Authorized Signatory)</small></div>
+                    <div class="auth-line"><span id="inv-sign-name">USER SHOP NAME</span><br><small style="font-weight: normal;">(Authorized Signatory)</small></div>
                 </div>
             </div>
 
@@ -440,7 +473,7 @@
 
                 currentUser = phone;
                 currentUserName = userData.ownerName || phone;
-                currentUserShop = userData.shopName || "SHAHIN SHOP MANAGER";
+                currentUserShop = userData.shopName || "MY SHOP";
 
                 if (rememberMe) {
                     localStorage.setItem('shahin_remembered_user', phone);
@@ -505,7 +538,7 @@
                 const uData = await userRes.json();
                 if(uData) {
                     currentUserName = uData.ownerName || currentUser;
-                    currentUserShop = uData.shopName || "SHAHIN SHOP MANAGER";
+                    currentUserShop = uData.shopName || "MY SHOP";
                 }
 
                 const res = await fetch(`${DB_URL}/data/${currentUser}.json`);
