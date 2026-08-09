@@ -29,7 +29,7 @@
             margin: 60px auto; 
             background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(10px);
-            padding: 40px; 
+            padding: 35px; 
             border-radius: 16px; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
             text-align: center; 
@@ -37,7 +37,7 @@
 
         .input-f { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
         .input-f:focus { border-color: var(--primary); }
-        .auth-toggle-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; margin-top: 15px; display: inline-block; font-size: 14px; }
+        .auth-toggle-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; margin-top: 12px; display: inline-block; font-size: 13px; }
         .checkbox-container { text-align: left; margin: 10px 0; font-size: 14px; color: #475569; display: flex; align-items: center; gap: 8px; }
         .hidden { display: none !important; }
         #main-app { display: none; max-width: 1100px; margin: auto; }
@@ -47,13 +47,13 @@
         .btn-tab { background: #f1f5f9; color: #475569; }
         .btn-tab.active { background: var(--primary); color: white; }
         .invoice-sheet { background: white; width: 100%; max-width: 800px; margin: auto; padding: 40px; position: relative; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px; }
-        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 50px; color: rgba(0,0,0,0.03); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel', serif; width: 100%; text-align: center; white-space: nowrap; }
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 40px; color: rgba(0,0,0,0.03); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel', serif; width: 100%; text-align: center; white-space: nowrap; }
         
-        /* নতুন লেফট অ্যালাইনড শপ হেডার স্টাইল */
-        .shop-header { text-align: left; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 25px; }
-        .shop-name { font-family: 'Cinzel', serif; font-size: 24px; margin: 0; color: #000; text-transform: uppercase; letter-spacing: 1px; }
-        .developer-sub { font-size: 11px; color: #475569; margin: 2px 0 8px 0; font-weight: 500; font-style: italic; }
-        .shop-contact-input { width: 100%; border: none; border-bottom: 1px dashed #ccc; outline: none; font-size: 13px; font-family: inherit; margin: 2px 0; }
+        /* ছোট শপ হেডার টাইটেল */
+        .shop-header { text-align: left; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 25px; }
+        .shop-name { font-family: 'Cinzel', serif; font-size: 18px; margin: 0; color: #000; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+        .developer-sub { font-size: 10px; color: #64748b; margin: 1px 0 6px 0; font-weight: 500; font-style: italic; }
+        .shop-contact-input { width: 100%; border: none; border-bottom: 1px dashed #ccc; outline: none; font-size: 12px; font-family: inherit; margin: 2px 0; background: transparent; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 20px; z-index: 1; position: relative; }
         th { background: #f8fafc; border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
@@ -61,7 +61,7 @@
         .cell-input { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-family: inherit; }
         .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .auth-block { margin-top: 80px; text-align: right; }
-        .auth-line { display: inline-block; border-top: 1px solid #000; width: 240px; padding-top: 8px; font-weight: bold; text-align: center; font-size: 14px; }
+        .auth-line { display: inline-block; border-top: 1px solid #000; width: 220px; padding-top: 8px; font-weight: bold; text-align: center; font-size: 13px; }
         .btn-del { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
         @media print {
             .no-print { display: none !important; }
@@ -75,11 +75,11 @@
 
     <!-- AUTH SCREEN -->
     <div id="auth-screen">
-        <h1 style="font-family: 'Cinzel', serif; margin:0; letter-spacing: 1px; font-size: 24px; color: var(--brand);">SHAHIN</h1>
-        <p style="margin-top:2px; color:#2563eb; letter-spacing:2px; font-size: 12px; font-weight: 700;">SHOP MANAGER</p>
+        <h2 style="font-family: 'Cinzel', serif; margin:0; letter-spacing: 0.5px; font-size: 18px; color: var(--brand);">SHAHIN SHOP MANAGER</h2>
+        <p style="margin-top:2px; color:#2563eb; letter-spacing:1px; font-size: 11px; font-weight: 700;">CLOUD PORTAL</p>
         
         <!-- LOGIN SECTION -->
-        <div id="login-section" style="margin-top: 25px;">
+        <div id="login-section" style="margin-top: 20px;">
             <h3 style="margin-bottom: 15px; color: #334155;">Login to Account</h3>
             <input type="tel" id="login-phone" class="input-f" placeholder="Mobile Number">
             <input type="password" id="login-pass" class="input-f" placeholder="Password">
@@ -90,15 +90,18 @@
             </div>
             
             <button id="login-btn" onclick="login()" class="btn" style="background:var(--brand); color:white; width:100%; margin-top: 10px; padding: 12px;">Enter Dashboard</button>
-            <span class="auth-toggle-link" onclick="toggleAuth('register')">New User? Register Here</span>
+            <br>
+            <span class="auth-toggle-link" onclick="toggleAuth('register')">New User? Register Here</span> | 
+            <span class="auth-toggle-link" onclick="toggleAuth('forgot')">Forgot Password?</span>
         </div>
 
         <!-- REGISTER SECTION -->
-        <div id="register-section" class="hidden" style="margin-top: 25px;">
+        <div id="register-section" class="hidden" style="margin-top: 20px;">
             <h3 style="margin-bottom: 15px; color: #334155;">Create Account</h3>
             
             <div id="reg-step-1">
-                <input type="text" id="reg-name" class="input-f" placeholder="Your Full Name">
+                <input type="text" id="reg-owner" class="input-f" placeholder="Owner Name">
+                <input type="text" id="reg-shop" class="input-f" placeholder="Shop Name">
                 <input type="tel" id="reg-phone" class="input-f" placeholder="Mobile Number">
                 <input type="password" id="reg-pass" class="input-f" placeholder="Set Password">
                 <button onclick="sendOTP()" class="btn" style="background:var(--primary); color:white; width:100%; margin-top: 10px; padding: 12px;">Send OTP</button>
@@ -112,6 +115,17 @@
 
             <span class="auth-toggle-link" onclick="toggleAuth('login')">Already have an account? Login</span>
         </div>
+
+        <!-- FORGOT PASSWORD SECTION -->
+        <div id="forgot-section" class="hidden" style="margin-top: 20px;">
+            <h3 style="margin-bottom: 15px; color: #334155;">Reset Password</h3>
+            <input type="tel" id="reset-phone" class="input-f" placeholder="Registered Mobile Number">
+            <input type="text" id="reset-otp" class="input-f" placeholder="Enter OTP (1234)" maxlength="4" style="text-align: center;">
+            <input type="password" id="reset-new-pass" class="input-f" placeholder="Enter New Password">
+            <button onclick="resetPasswordFromLogin()" class="btn" style="background:var(--primary); color:white; width:100%; margin-top: 10px; padding: 12px;">Update Password</button>
+            <br>
+            <span class="auth-toggle-link" onclick="toggleAuth('login')">Back to Login</span>
+        </div>
     </div>
 
     <!-- MAIN DASHBOARD -->
@@ -120,6 +134,7 @@
             <button class="btn btn-tab active" id="btn-bill" onclick="showTab('bill')">Create Bill</button>
             <button class="btn btn-tab" id="btn-stock" onclick="showTab('stock')">Inventory</button>
             <button class="btn btn-tab" id="btn-his" onclick="showTab('his')">History</button>
+            <button class="btn btn-tab" id="btn-profile" onclick="showTab('profile')">Profile & Settings</button>
             <div style="margin-left: auto; font-weight: bold; color:var(--primary); font-size: 14px;">
                 User: <span id="user-display" style="color:var(--brand)"></span> | Invoices: <span id="bill-counter">0</span>
             </div>
@@ -131,7 +146,7 @@
             <div class="invoice-sheet" id="print-sheet">
                 <div class="watermark">SHAHIN SHOP MANAGER</div>
                 <div class="shop-header">
-                    <h1 class="shop-name">SHAHIN SHOP MANAGER</h1>
+                    <h1 class="shop-name" id="inv-shop-title">SHAHIN SHOP MANAGER</h1>
                     <div class="developer-sub">Developed By Shahin</div>
                     <input type="text" id="my-address" class="shop-contact-input" placeholder="Your Address (e.g. Nagarbera :: Kamrup :: Assam :: 781127)">
                     <input type="text" id="my-phone" class="shop-contact-input" placeholder="Your Phone Number (e.g. Phone: 7086992870)" style="font-weight: bold;">
@@ -179,7 +194,7 @@
                 </div>
 
                 <div class="auth-block">
-                    <div class="auth-line">SHAHIN SHOP MANAGER<br><small style="font-weight: normal;">(Authorized Signatory)</small></div>
+                    <div class="auth-line"><span id="inv-sign-name">SHAHIN SHOP MANAGER</span><br><small style="font-weight: normal;">(Authorized Signatory)</small></div>
                 </div>
             </div>
 
@@ -220,49 +235,93 @@
             <input type="text" id="search-bar" class="input-f" placeholder="Search by Invoice No, Name, or Phone..." oninput="search()" style="margin-bottom: 15px;">
             <div id="his-list"></div>
         </div>
+
+        <!-- TAB: PROFILE & SETTINGS -->
+        <div id="tab-profile" style="display: none;">
+            <div class="card" style="max-width: 600px; margin: auto;">
+                <h3 style="margin-top:0; color:var(--brand); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">User & Shop Profile</h3>
+                
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Owner Name:</label>
+                <input type="text" id="prof-owner" class="input-f" placeholder="Owner Name">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Shop Name:</label>
+                <input type="text" id="prof-shop" class="input-f" placeholder="Shop Name">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Mobile Number (Login ID):</label>
+                <input type="text" id="prof-phone" class="input-f" readonly style="background: #f1f5f9; cursor: not-allowed;">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Shop Address:</label>
+                <input type="text" id="prof-address" class="input-f" placeholder="e.g. Nagarbera :: Kamrup :: Assam">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Shop Contact Phone:</label>
+                <input type="text" id="prof-contact-phone" class="input-f" placeholder="Phone Number for Invoice">
+
+                <button onclick="updateProfile()" class="btn" style="background:var(--success); color:white; width: 100%; margin-top: 15px; padding: 12px;">Save Profile Details</button>
+            </div>
+
+            <div class="card" style="max-width: 600px; margin: 20px auto;">
+                <h3 style="margin-top:0; color:var(--brand); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Security & Password Reset</h3>
+                
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Old Password:</label>
+                <input type="password" id="pass-old" class="input-f" placeholder="Current Password">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">New Password:</label>
+                <input type="password" id="pass-new" class="input-f" placeholder="Enter New Password">
+
+                <button onclick="changePassword()" class="btn" style="background:var(--primary); color:white; width: 100%; margin-top: 15px; padding: 12px;">Change Password</button>
+            </div>
+        </div>
     </div>
 
     <script>
         const DB_URL = "https://shahin-mobi-tech-default-rtdb.firebaseio.com";
         let currentUser = "";
         let currentUserName = "";
-        let db = { invs: [], stk: {}, profile: { address: "", phone: "" } };
+        let currentUserShop = "";
+        let db = { invs: [], stk: {}, profile: {} };
 
         window.onload = function() {
             checkRememberedUser();
         };
 
         function toggleAuth(type) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('register-section').classList.add('hidden');
+            document.getElementById('forgot-section').classList.add('hidden');
+
             if (type === 'register') {
-                document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('register-section').classList.remove('hidden');
+            } else if (type === 'forgot') {
+                document.getElementById('forgot-section').classList.remove('hidden');
             } else {
-                document.getElementById('register-section').classList.add('hidden');
                 document.getElementById('login-section').classList.remove('hidden');
             }
         }
 
         function sendOTP() {
-            const name = document.getElementById('reg-name').value.trim();
+            const owner = document.getElementById('reg-owner').value.trim();
+            const shop = document.getElementById('reg-shop').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
-            if (!name) return alert("Please enter your Full Name.");
+            
+            if (!owner || !shop) return alert("Please enter Owner Name and Shop Name.");
             if (phone.length < 10) return alert("Please enter a valid Mobile Number.");
             if (pass.length < 4) return alert("Password must be at least 4 characters.");
+            
             document.getElementById('reg-step-1').classList.add('hidden');
             document.getElementById('reg-step-2').classList.remove('hidden');
             alert("OTP Sent! Default OTP is 1234");
         }
 
         async function verifyAndRegister() {
-            const name = document.getElementById('reg-name').value.trim();
+            const owner = document.getElementById('reg-owner').value.trim();
+            const shop = document.getElementById('reg-shop').value.trim();
             const rawPhone = document.getElementById('reg-phone').value.trim();
             const phone = rawPhone.replace(/[^0-9]/g, '');
             const pass = document.getElementById('reg-pass').value.trim();
             const otp = document.getElementById('reg-otp').value.trim();
 
             if (otp !== '1234') return alert("Invalid OTP! Enter 1234");
-            if (phone.length < 10) return alert("Enter valid 10-digit Phone Number");
 
             const regBtn = document.getElementById('reg-btn');
             regBtn.innerText = "Registering...";
@@ -272,11 +331,16 @@
                 const res = await fetch(`${DB_URL}/users/${phone}.json`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: name, password: pass, createdAt: new Date().toISOString() })
+                    body: JSON.stringify({ 
+                        ownerName: owner, 
+                        shopName: shop, 
+                        password: pass, 
+                        createdAt: new Date().toISOString() 
+                    })
                 });
 
                 if (res.ok) {
-                    alert("Registration Successful! Now you can login from any device.");
+                    alert("Registration Successful! Now you can login.");
                     document.getElementById('reg-step-2').classList.add('hidden');
                     document.getElementById('reg-step-1').classList.remove('hidden');
                     document.getElementById('login-phone').value = phone;
@@ -290,6 +354,35 @@
             } finally {
                 regBtn.innerText = "Verify & Register";
                 regBtn.disabled = false;
+            }
+        }
+
+        async function resetPasswordFromLogin() {
+            const phone = document.getElementById('reset-phone').value.trim().replace(/[^0-9]/g, '');
+            const otp = document.getElementById('reset-otp').value.trim();
+            const newPass = document.getElementById('reset-new-pass').value.trim();
+
+            if(!phone || otp !== '1234' || newPass.length < 4) {
+                return alert("Please enter valid Mobile Number, OTP (1234) and New Password (min 4 chars).");
+            }
+
+            try {
+                const res = await fetch(`${DB_URL}/users/${phone}.json`);
+                const userData = await res.json();
+
+                if(!userData) return alert("Account not found!");
+
+                userData.password = newPass;
+                await fetch(`${DB_URL}/users/${phone}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                alert("Password updated successfully! Please login.");
+                toggleAuth('login');
+            } catch(e) {
+                alert("Error resetting password!");
             }
         }
 
@@ -320,14 +413,13 @@
                 }
 
                 currentUser = phone;
-                currentUserName = userData.name || phone;
+                currentUserName = userData.ownerName || phone;
+                currentUserShop = userData.shopName || "SHAHIN SHOP MANAGER";
 
                 if (rememberMe) {
                     localStorage.setItem('shahin_remembered_user', phone);
-                    localStorage.setItem('shahin_remembered_name', currentUserName);
                 } else {
                     localStorage.removeItem('shahin_remembered_user');
-                    localStorage.removeItem('shahin_remembered_name');
                 }
 
                 launchDashboard();
@@ -341,10 +433,8 @@
 
         function checkRememberedUser() {
             const savedUser = localStorage.getItem('shahin_remembered_user');
-            const savedName = localStorage.getItem('shahin_remembered_name');
             if (savedUser) {
                 currentUser = savedUser;
-                currentUserName = savedName || savedUser;
                 launchDashboard();
             }
         }
@@ -352,7 +442,6 @@
         async function launchDashboard() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            document.getElementById('user-display').innerText = `${currentUserName} (${currentUser})`;
             
             await loadCloudDb();
             resetInv();
@@ -360,14 +449,14 @@
 
         function logout() {
             localStorage.removeItem('shahin_remembered_user');
-            localStorage.removeItem('shahin_remembered_name');
             location.reload();
         }
 
         async function saveDb() { 
             if(currentUser) {
-                // শপ এড্রেস ও ফোন প্রোফাইলে সেভ করা
                 db.profile = {
+                    ownerName: document.getElementById('prof-owner').value.trim(),
+                    shopName: document.getElementById('prof-shop').value.trim(),
                     address: document.getElementById('my-address').value.trim(),
                     phone: document.getElementById('my-phone').value.trim()
                 };
@@ -386,32 +475,100 @@
 
         async function loadCloudDb() {
             try {
+                const userRes = await fetch(`${DB_URL}/users/${currentUser}.json`);
+                const uData = await userRes.json();
+                if(uData) {
+                    currentUserName = uData.ownerName || currentUser;
+                    currentUserShop = uData.shopName || "SHAHIN SHOP MANAGER";
+                }
+
                 const res = await fetch(`${DB_URL}/data/${currentUser}.json`);
                 const cloudData = await res.json();
                 if(cloudData) {
                     db = cloudData;
                     if(!db.stk) db.stk = {};
                     if(!db.invs) db.invs = [];
-                    if(!db.profile) db.profile = { address: "", phone: "" };
+                    if(!db.profile) db.profile = {};
                 } else {
-                    db = { invs: [], stk: {}, profile: { address: "", phone: "" } };
+                    db = { invs: [], stk: {}, profile: {} };
                 }
             } catch(e) {
-                db = { invs: [], stk: {}, profile: { address: "", phone: "" } };
+                db = { invs: [], stk: {}, profile: {} };
             }
 
-            // সেভ করা এড্রেস ও ফোন নম্বর লোড করা
-            if(db.profile) {
-                document.getElementById('my-address').value = db.profile.address || "";
-                document.getElementById('my-phone').value = db.profile.phone || `Phone: ${currentUser}`;
-            }
+            // প্রোফাইল ও ড্যাশবোর্ড আপডেট
+            document.getElementById('user-display').innerText = `${currentUserName} (${currentUser})`;
+            document.getElementById('prof-owner').value = db.profile.ownerName || currentUserName;
+            document.getElementById('prof-shop').value = db.profile.shopName || currentUserShop;
+            document.getElementById('prof-phone').value = currentUser;
+            document.getElementById('prof-address').value = db.profile.address || "";
+            document.getElementById('prof-contact-phone').value = db.profile.phone || `Phone: ${currentUser}`;
+
+            document.getElementById('my-address').value = db.profile.address || "";
+            document.getElementById('my-phone').value = db.profile.phone || `Phone: ${currentUser}`;
+            
+            const shopTitle = db.profile.shopName || currentUserShop;
+            document.getElementById('inv-shop-title').innerText = shopTitle;
+            document.getElementById('inv-sign-name').innerText = shopTitle;
 
             document.getElementById('bill-counter').innerText = db.invs.length;
             renderHistory(db.invs);
         }
 
+        async function updateProfile() {
+            const owner = document.getElementById('prof-owner').value.trim();
+            const shop = document.getElementById('prof-shop').value.trim();
+            const addr = document.getElementById('prof-address').value.trim();
+            const phone = document.getElementById('prof-contact-phone').value.trim();
+
+            if(!owner || !shop) return alert("Owner Name and Shop Name are required!");
+
+            document.getElementById('my-address').value = addr;
+            document.getElementById('my-phone').value = phone;
+            document.getElementById('inv-shop-title').innerText = shop;
+            document.getElementById('inv-sign-name').innerText = shop;
+
+            // Update user core profile
+            await fetch(`${DB_URL}/users/${currentUser}/ownerName.json`, { method: 'PUT', body: JSON.stringify(owner) });
+            await fetch(`${DB_URL}/users/${currentUser}/shopName.json`, { method: 'PUT', body: JSON.stringify(shop) });
+
+            saveDb();
+            alert("Profile Details Updated Successfully!");
+            document.getElementById('user-display').innerText = `${owner} (${currentUser})`;
+        }
+
+        async function changePassword() {
+            const oldP = document.getElementById('pass-old').value.trim();
+            const newP = document.getElementById('pass-new').value.trim();
+
+            if(!oldP || !newP) return alert("Please enter both old and new password.");
+            if(newP.length < 4) return alert("New Password must be at least 4 characters.");
+
+            try {
+                const res = await fetch(`${DB_URL}/users/${currentUser}.json`);
+                const userData = await res.json();
+
+                if(userData.password !== oldP) {
+                    return alert("Incorrect Old Password!");
+                }
+
+                userData.password = newP;
+                await fetch(`${DB_URL}/users/${currentUser}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                alert("Password changed successfully!");
+                document.getElementById('pass-old').value = "";
+                document.getElementById('pass-new').value = "";
+            } catch(e) {
+                alert("Error updating password.");
+            }
+        }
+
         function showTab(t) {
-            ['bill', 'stock', 'his'].forEach(tab => {
+            ['bill', 'stock', 'his', 'profile'].forEach(tab => {
                 document.getElementById('tab-' + tab).style.display = t === tab ? 'block' : 'none';
                 document.getElementById('btn-' + tab).classList.toggle('active', t === tab);
             });
