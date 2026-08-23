@@ -35,13 +35,7 @@
             text-align: center; 
         }
 
-        .brand-header-flex {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
+        .brand-header-flex { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .input-f { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
         .input-f:focus { border-color: var(--primary); }
         .auth-toggle-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; margin-top: 12px; display: inline-block; font-size: 13px; }
@@ -56,32 +50,12 @@
         .invoice-sheet { background: white; width: 100%; max-width: 800px; margin: auto; padding: 40px; position: relative; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px; }
         .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 40px; color: rgba(0,0,0,0.03); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel', serif; width: 100%; text-align: center; white-space: nowrap; }
         
-        /* শপ হেডার লেআউট - বামে ব্র্যান্ডিং, মাঝখানে ইউজার শপ তথ্য */
-        .shop-header { 
-            position: relative;
-            border-bottom: 2px solid #000; 
-            padding-bottom: 15px; 
-            margin-bottom: 25px; 
-            min-height: 90px;
-        }
-
-        .left-branding {
-            position: absolute;
-            left: 0;
-            top: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-align: left;
-        }
+        .shop-header { position: relative; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px; min-height: 90px; }
+        .left-branding { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 10px; text-align: left; }
         .brand-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #0f172a; margin: 0; line-height: 1.2; }
         .developer-sub { font-size: 10px; color: #64748b; margin-top: 2px; font-weight: 500; font-style: italic; }
 
-        .center-shop-details {
-            width: 60%;
-            margin: 0 auto;
-            text-align: center;
-        }
+        .center-shop-details { width: 60%; margin: 0 auto; text-align: center; }
         .shop-name { font-family: 'Cinzel', serif; font-size: 22px; margin: 0 0 4px 0; color: #000; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; text-align: center; }
         .shop-contact-input { width: 100%; border: none; border-bottom: 1px dashed #ccc; outline: none; font-size: 13px; font-family: inherit; margin: 2px 0; background: transparent; text-align: center; }
         
@@ -90,6 +64,10 @@
         td { border: 1px solid #000; padding: 8px; }
         .cell-input { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-family: inherit; }
         .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stat-card h4 { margin: 0 0 8px 0; color: #64748b; font-size: 13px; font-weight: 500; }
+        .stat-card .amt { font-size: 22px; font-weight: bold; color: #0f172a; margin: 0; }
         .auth-block { margin-top: 80px; text-align: right; }
         .auth-line { display: inline-block; border-top: 1px solid #000; width: 220px; padding-top: 8px; font-weight: bold; text-align: center; font-size: 13px; }
         .btn-del { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
@@ -172,6 +150,8 @@
     <div id="main-app">
         <div class="nav-bar no-print">
             <button class="btn btn-tab active" id="btn-bill" onclick="showTab('bill')">Create Bill</button>
+            <button class="btn btn-tab" id="btn-customers" onclick="showTab('customers')">Customers</button>
+            <button class="btn btn-tab" id="btn-profit" onclick="showTab('profit')">Analytics & Profit</button>
             <button class="btn btn-tab" id="btn-stock" onclick="showTab('stock')">Inventory</button>
             <button class="btn btn-tab" id="btn-his" onclick="showTab('his')">History</button>
             <button class="btn btn-tab" id="btn-profile" onclick="showTab('profile')">Profile & Settings</button>
@@ -186,9 +166,7 @@
             <div class="invoice-sheet" id="print-sheet">
                 <div class="watermark">SHAHIN SHOP MANAGER</div>
                 
-                <!-- HEADER (LEFT BRANDING & CENTER SHOP DETAILS) -->
                 <div class="shop-header">
-                    <!-- SVG LOGO + SHAHIN SHOP MANAGER + DEVELOPED BY SHAHIN -->
                     <div class="left-branding">
                         <svg width="40" height="40" viewBox="0 0 100 100" style="border-radius: 6px;">
                             <rect width="100" height="100" rx="20" fill="#0f172a"/>
@@ -201,10 +179,9 @@
                         </div>
                     </div>
 
-                    <!-- CENTER SIDE: USER'S SHOP NAME, ADDRESS, PHONE -->
                     <div class="center-shop-details">
                         <h1 class="shop-name" id="inv-shop-title">USER SHOP NAME</h1>
-                        <input type="text" id="my-address" class="shop-contact-input" placeholder="Your Address (e.g. Nagarbera :: Kamrup :: Assam :: 781127)">
+                        <input type="text" id="my-address" class="shop-contact-input" placeholder="Your Address">
                         <input type="text" id="my-phone" class="shop-contact-input" placeholder="Your Phone Number" style="font-weight: bold;">
                     </div>
                 </div>
@@ -212,8 +189,9 @@
                 <div style="display: flex; justify-content: space-between; margin-bottom: 25px; gap: 20px;">
                     <div style="border: 1px solid #000; padding: 12px; width: 320px; border-radius: 4px;">
                         <strong style="font-size: 12px; letter-spacing: 1px;">CUSTOMER DETAILS:</strong>
-                        <input type="text" id="c-name" class="cell-input" placeholder="Full Name" style="margin-top:4px;">
+                        <input type="text" id="c-name" class="cell-input" list="customer-list" placeholder="Full Name" onchange="autoFillCustomerInfo(this.value)" style="margin-top:4px;">
                         <input type="text" id="c-phone" class="cell-input" placeholder="Phone / Address">
+                        <datalist id="customer-list"></datalist>
                     </div>
                     <div style="text-align: right; font-size: 14px;">
                         <p style="margin: 4px 0;">Date: <span id="cur-date"></span></p>
@@ -221,7 +199,6 @@
                     </div>
                 </div>
 
-                <!-- Product Datalist for Auto-complete -->
                 <datalist id="stock-list"></datalist>
 
                 <table>
@@ -264,13 +241,77 @@
             </div>
         </div>
 
+        <!-- TAB: CUSTOMERS & PENDING BALANCE -->
+        <div id="tab-customers" style="display: none;">
+            <div class="card">
+                <h3 style="margin-top:0;">Add / Update Customer Directory</h3>
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <input type="text" id="cust-add-name" class="input-f" style="margin:0; flex: 2; min-width: 180px;" placeholder="Customer Name">
+                    <input type="tel" id="cust-add-phone" class="input-f" style="margin:0; flex: 2; min-width: 150px;" placeholder="Phone Number">
+                    <button onclick="addCustomer()" class="btn" style="background:var(--primary); color:white;">Save Customer</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0;">Customer Directory & Pending Balances</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Phone</th>
+                            <th>Total Purchases</th>
+                            <th>Pending Balance</th>
+                            <th width="100" class="no-print">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customer-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB: DAILY, MONTHLY & ANNUAL PROFIT -->
+        <div id="tab-profit" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card" style="border-color: #3b82f6;">
+                    <h4>TODAY'S PROFIT</h4>
+                    <p class="amt" style="color:#2563eb;">₹ <span id="p-daily">0.00</span></p>
+                </div>
+                <div class="stat-card" style="border-color: #10b981;">
+                    <h4>THIS MONTH'S PROFIT</h4>
+                    <p class="amt" style="color:#059669;">₹ <span id="p-monthly">0.00</span></p>
+                </div>
+                <div class="stat-card" style="border-color: #8b5cf6;">
+                    <h4>THIS YEAR'S PROFIT</h4>
+                    <p class="amt" style="color:#7c3aed;">₹ <span id="p-annual">0.00</span></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0;">Profit Breakdown by Sales History</h3>
+                <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Profit is calculated based on Selling Price minus Inventory Purchase Price (Cost) per unit.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Invoice No</th>
+                            <th>Customer</th>
+                            <th>Sales Amount</th>
+                            <th>Calculated Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profit-history-body"></tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- TAB: INVENTORY -->
         <div id="tab-stock" style="display: none;">
             <div class="card">
                 <h3 style="margin-top:0;">Add / Update Stock (Stock In)</h3>
                 <div style="display:flex; gap:10px; flex-wrap: wrap;">
-                    <input type="text" id="sk-name" class="input-f" style="margin:0; flex: 2; min-width: 200px;" placeholder="Product Name">
-                    <input type="number" id="sk-qty" class="input-f" style="margin:0; flex: 1; min-width: 100px;" placeholder="Quantity" min="1">
+                    <input type="text" id="sk-name" class="input-f" style="margin:0; flex: 2; min-width: 180px;" placeholder="Product Name">
+                    <input type="number" id="sk-cost" class="input-f" style="margin:0; flex: 1; min-width: 110px;" placeholder="Purchase Cost (₹)" min="0">
+                    <input type="number" id="sk-qty" class="input-f" style="margin:0; flex: 1; min-width: 90px;" placeholder="Quantity" min="1">
                     <button onclick="addStock()" class="btn" style="background:var(--primary); color:white;">Update Stock</button>
                 </div>
             </div>
@@ -280,6 +321,7 @@
                     <thead>
                         <tr>
                             <th>Product Name</th>
+                            <th>Unit Purchase Cost</th>
                             <th>Stock Level</th>
                             <th>Status</th>
                             <th width="80" class="no-print">Action</th>
@@ -311,12 +353,26 @@
                 <input type="text" id="prof-phone" class="input-f" readonly style="background: #f1f5f9; cursor: not-allowed;">
 
                 <label style="font-weight:bold; font-size:13px; color:#475569;">Shop Address:</label>
-                <input type="text" id="prof-address" class="input-f" placeholder="e.g. Nagarbera :: Kamrup :: Assam">
+                <input type="text" id="prof-address" class="input-f" placeholder="Address">
 
                 <label style="font-weight:bold; font-size:13px; color:#475569;">Shop Contact Phone:</label>
                 <input type="text" id="prof-contact-phone" class="input-f" placeholder="Phone Number for Invoice">
 
                 <button onclick="updateProfile()" class="btn" style="background:var(--success); color:white; width: 100%; margin-top: 15px; padding: 12px;">Save Profile Details</button>
+            </div>
+
+            <!-- JSON BACKUP & RESTORE SECTION -->
+            <div class="card" style="max-width: 600px; margin: 20px auto;">
+                <h3 style="margin-top:0; color:var(--brand); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Data Backup & Restore (JSON)</h3>
+                <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Export your complete shop data as a JSON file or restore from a previously exported JSON backup file.</p>
+                
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <button onclick="exportJsonData()" class="btn" style="background:var(--primary); color:white; flex:1; padding: 12px;">Export Data (JSON)</button>
+                    <label class="btn" style="background:#475569; color:white; flex:1; padding: 12px; text-align:center; cursor:pointer;">
+                        Restore Data (JSON)
+                        <input type="file" id="json-restore-file" accept=".json" onchange="restoreJsonData(event)" style="display:none;">
+                    </label>
+                </div>
             </div>
 
             <div class="card" style="max-width: 600px; margin: 20px auto;">
@@ -338,7 +394,7 @@
         let currentUser = "";
         let currentUserName = "";
         let currentUserShop = "";
-        let db = { invs: [], stk: {}, profile: {} };
+        let db = { invs: [], stk: {}, customers: {}, profile: {} };
 
         window.onload = function() {
             checkRememberedUser();
@@ -463,7 +519,7 @@
                 const userData = await res.json();
 
                 if (!userData) {
-                    alert("Account not found! Click 'New User? Register Here' first.");
+                    alert("Account not found! Register first.");
                     return;
                 }
 
@@ -548,12 +604,13 @@
                     db = cloudData;
                     if(!db.stk) db.stk = {};
                     if(!db.invs) db.invs = [];
+                    if(!db.customers) db.customers = {};
                     if(!db.profile) db.profile = {};
                 } else {
-                    db = { invs: [], stk: {}, profile: {} };
+                    db = { invs: [], stk: {}, customers: {}, profile: {} };
                 }
             } catch(e) {
-                db = { invs: [], stk: {}, profile: {} };
+                db = { invs: [], stk: {}, customers: {}, profile: {} };
             }
 
             document.getElementById('user-display').innerText = `${currentUserName} (${currentUser})`;
@@ -572,15 +629,75 @@
 
             document.getElementById('bill-counter').innerText = db.invs.length;
             updateStockDataList();
+            updateCustomerDataList();
             renderHistory(db.invs);
+        }
+
+        /* EXPORT & RESTORE JSON FUNCTIONS */
+        function exportJsonData() {
+            if(!db) return alert("No data available to export.");
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `shahin_shop_backup_${currentUser}_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function restoreJsonData(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const importedDb = JSON.parse(e.target.result);
+                    if(typeof importedDb !== 'object') throw new Error("Invalid JSON structure");
+
+                    if(confirm("Are you sure you want to restore data from this JSON file? Existing cloud data will be overwritten.")) {
+                        db = importedDb;
+                        if(!db.stk) db.stk = {};
+                        if(!db.invs) db.invs = [];
+                        if(!db.customers) db.customers = {};
+                        if(!db.profile) db.profile = {};
+
+                        await saveDb();
+                        await loadCloudDb();
+                        alert("Data successfully restored from JSON file and updated to Cloud!");
+                    }
+                } catch(err) {
+                    alert("Failed to parse JSON file. Please upload a valid backup JSON file.");
+                } finally {
+                    event.target.value = ""; // Reset file input
+                }
+            };
+            reader.readAsText(file);
         }
 
         function updateStockDataList() {
             const dl = document.getElementById('stock-list');
             dl.innerHTML = "";
             Object.keys(db.stk).forEach(item => {
-                dl.innerHTML += `<option value="${item}">Available Stock: ${db.stk[item]}</option>`;
+                const stockObj = db.stk[item];
+                const qty = typeof stockObj === 'object' ? stockObj.qty : stockObj;
+                dl.innerHTML += `<option value="${item}">Available Stock: ${qty}</option>`;
             });
+        }
+
+        function updateCustomerDataList() {
+            const dl = document.getElementById('customer-list');
+            dl.innerHTML = "";
+            Object.keys(db.customers).forEach(cName => {
+                dl.innerHTML += `<option value="${cName}">${db.customers[cName].phone || ''}</option>`;
+            });
+        }
+
+        function autoFillCustomerInfo(val) {
+            const cName = val.trim().toUpperCase();
+            if(db.customers[cName]) {
+                document.getElementById('c-phone').value = db.customers[cName].phone || "";
+            }
         }
 
         async function updateProfile() {
@@ -635,23 +752,165 @@
         }
 
         function showTab(t) {
-            ['bill', 'stock', 'his', 'profile'].forEach(tab => {
+            ['bill', 'customers', 'profit', 'stock', 'his', 'profile'].forEach(tab => {
                 document.getElementById('tab-' + tab).style.display = t === tab ? 'block' : 'none';
                 document.getElementById('btn-' + tab).classList.toggle('active', t === tab);
             });
             if(t === 'stock') renderStock();
+            if(t === 'customers') renderCustomers();
+            if(t === 'profit') renderProfit();
         }
 
+        /* CUSTOMER MANAGEMENT FUNCTIONS */
+        function addCustomer() {
+            const name = document.getElementById('cust-add-name').value.trim().toUpperCase();
+            const phone = document.getElementById('cust-add-phone').value.trim();
+            if(!name) return alert("Customer name is required!");
+
+            if(!db.customers[name]) {
+                db.customers[name] = { phone: phone };
+            } else {
+                db.customers[name].phone = phone;
+            }
+
+            saveDb();
+            updateCustomerDataList();
+            renderCustomers();
+            document.getElementById('cust-add-name').value = "";
+            document.getElementById('cust-add-phone').value = "";
+            alert("Customer saved successfully!");
+        }
+
+        function deleteCustomer(name) {
+            if(confirm(`Remove "${name}" from customer list?`)) {
+                delete db.customers[name];
+                saveDb();
+                updateCustomerDataList();
+                renderCustomers();
+            }
+        }
+
+        function renderCustomers() {
+            const b = document.getElementById('customer-body');
+            b.innerHTML = "";
+
+            const customerPendingMap = {};
+            const customerTotalPurchase = {};
+
+            db.invs.forEach(inv => {
+                const cName = (inv.name || "WALK-IN CUSTOMER").toUpperCase();
+                const pend = parseFloat(inv.pending) || 0;
+                const tot = parseFloat(inv.total) || 0;
+
+                customerPendingMap[cName] = (customerPendingMap[cName] || 0) + pend;
+                customerTotalPurchase[cName] = (customerTotalPurchase[cName] || 0) + tot;
+            });
+
+            const allCustomerNames = Array.from(new Set([...Object.keys(db.customers), ...Object.keys(customerPendingMap)]));
+
+            if(allCustomerNames.length === 0) {
+                b.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No customer data available.</td></tr>`;
+                return;
+            }
+
+            allCustomerNames.forEach(cName => {
+                const phone = db.customers[cName]?.phone || '-';
+                const totalBought = customerTotalPurchase[cName] || 0;
+                const pending = customerPendingMap[cName] || 0;
+
+                b.innerHTML += `<tr>
+                    <td><strong>${cName}</strong></td>
+                    <td>${phone}</td>
+                    <td>₹ ${totalBought.toFixed(2)}</td>
+                    <td style="color:${pending > 0 ? 'var(--danger)' : 'var(--success)'}; font-weight:bold;">
+                        ₹ ${pending.toFixed(2)} ${pending > 0 ? '(Due)' : '(Clear)'}
+                    </td>
+                    <td class="no-print">
+                        ${db.customers[cName] ? `<button onclick="deleteCustomer('${cName}')" class="btn-del">Delete</button>` : '-'}
+                    </td>
+                </tr>`;
+            });
+        }
+
+        /* PROFIT CALCULATION FUNCTIONS */
+        function renderProfit() {
+            const todayStr = new Date().toLocaleDateString('en-IN');
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            let dailyProfit = 0;
+            let monthlyProfit = 0;
+            let annualProfit = 0;
+
+            const tbody = document.getElementById('profit-history-body');
+            tbody.innerHTML = "";
+
+            db.invs.slice().reverse().forEach(inv => {
+                let invCost = 0;
+                let invRevenue = parseFloat(inv.total) || 0;
+
+                inv.items.forEach(it => {
+                    const itemName = it.n.toUpperCase();
+                    const stockItem = db.stk[itemName];
+                    let unitCost = 0;
+                    if(typeof stockItem === 'object' && stockItem.cost) {
+                        unitCost = parseFloat(stockItem.cost) || 0;
+                    }
+                    invCost += (unitCost * (parseInt(it.q) || 0));
+                });
+
+                const invProfit = invRevenue - invCost;
+
+                const parts = inv.date.split('/');
+                let invDateObj = new Date();
+                if(parts.length === 3) {
+                    invDateObj = new Date(parts[2], parts[1] - 1, parts[0]);
+                }
+
+                if(inv.date === todayStr) {
+                    dailyProfit += invProfit;
+                }
+                if(invDateObj.getMonth() === currentMonth && invDateObj.getFullYear() === currentYear) {
+                    monthlyProfit += invProfit;
+                }
+                if(invDateObj.getFullYear() === currentYear) {
+                    annualProfit += invProfit;
+                }
+
+                tbody.innerHTML += `<tr>
+                    <td>${inv.date}</td>
+                    <td>#${inv.no}</td>
+                    <td>${inv.name || 'Walk-in'}</td>
+                    <td>₹ ${invRevenue.toFixed(2)}</td>
+                    <td style="color:${invProfit >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:bold;">₹ ${invProfit.toFixed(2)}</td>
+                </tr>`;
+            });
+
+            document.getElementById('p-daily').innerText = dailyProfit.toFixed(2);
+            document.getElementById('p-monthly').innerText = monthlyProfit.toFixed(2);
+            document.getElementById('p-annual').innerText = annualProfit.toFixed(2);
+        }
+
+        /* STOCK MANAGEMENT */
         function addStock() {
             const n = document.getElementById('sk-name').value.trim().toUpperCase();
+            const c = parseFloat(document.getElementById('sk-cost').value) || 0;
             const q = parseInt(document.getElementById('sk-qty').value);
             if(!n || isNaN(q) || q <= 0) return alert("Enter valid product name and quantity.");
             
-            db.stk[n] = (db.stk[n] || 0) + q;
+            const existingQty = db.stk[n] ? (typeof db.stk[n] === 'object' ? db.stk[n].qty : db.stk[n]) : 0;
+            
+            db.stk[n] = {
+                cost: c,
+                qty: existingQty + q
+            };
+
             saveDb(); 
             renderStock();
             updateStockDataList();
             document.getElementById('sk-name').value = ""; 
+            document.getElementById('sk-cost').value = ""; 
             document.getElementById('sk-qty').value = "";
         }
 
@@ -669,13 +928,17 @@
             b.innerHTML = "";
             const items = Object.keys(db.stk);
             if(items.length === 0) {
-                b.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">No stock items added yet.</td></tr>`;
+                b.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No stock items added yet.</td></tr>`;
                 return;
             }
             items.forEach(item => {
-                const q = db.stk[item];
+                const stockObj = db.stk[item];
+                const q = typeof stockObj === 'object' ? stockObj.qty : stockObj;
+                const cost = typeof stockObj === 'object' ? stockObj.cost || 0 : 0;
+
                 b.innerHTML += `<tr>
                     <td><strong>${item}</strong></td>
+                    <td>₹ ${cost.toFixed(2)}</td>
                     <td>${q}</td>
                     <td style="color:${q < 3 ? 'red' : 'green'}; font-weight:bold;">${q < 3 ? (q <= 0 ? 'Out of Stock' : 'Low Stock') : 'Available'}</td>
                     <td class="no-print"><button onclick="deleteStockItem('${item}')" class="btn-del">Delete</button></td>
@@ -698,7 +961,8 @@
             const itemName = elem.value.trim().toUpperCase();
             elem.value = itemName;
             if(db.stk[itemName] !== undefined) {
-                const currentStock = db.stk[itemName];
+                const stockObj = db.stk[itemName];
+                const currentStock = typeof stockObj === 'object' ? stockObj.qty : stockObj;
                 if(currentStock <= 0) {
                     alert(`Warning: "${itemName}" is Out of Stock! (Stock: 0)`);
                 }
@@ -738,7 +1002,6 @@
             calc();
         }
 
-        /* AUTO STOCK OUT FEATURE ADDED HERE */
         function saveAndPrint() {
             const rows = document.querySelectorAll('#bill-items tr');
             if(rows.length === 0) return alert("Please add at least one item.");
@@ -747,24 +1010,24 @@
             let valid = false;
             let stockCheckFailed = false;
 
-            // Step 1: Validate stock levels before proceeding
             rows.forEach(r => {
                 const name = r.querySelector('.p-n').value.trim().toUpperCase();
                 const qty = parseInt(r.querySelector('.p-q').value) || 0;
 
                 if(name && qty > 0) {
                     if(db.stk[name] !== undefined) {
-                        if(db.stk[name] < qty) {
-                            alert(`Insufficient Stock for "${name}"!\nAvailable: ${db.stk[name]} | Requested: ${qty}`);
+                        const stockObj = db.stk[name];
+                        const available = typeof stockObj === 'object' ? stockObj.qty : stockObj;
+                        if(available < qty) {
+                            alert(`Insufficient Stock for "${name}"!\nAvailable: ${available} | Requested: ${qty}`);
                             stockCheckFailed = true;
                         }
                     }
                 }
             });
 
-            if(stockCheckFailed) return; // Stop process if stock is insufficient
+            if(stockCheckFailed) return;
 
-            // Step 2: Auto Stockout (Deduct stock) and prepare invoice
             rows.forEach(r => {
                 const name = r.querySelector('.p-n').value.trim().toUpperCase();
                 const qty = parseInt(r.querySelector('.p-q').value) || 0;
@@ -774,20 +1037,30 @@
                     valid = true;
                     items.push({ n: name, q: qty, p: price });
                     
-                    // Auto deduct stock if item exists in Inventory
                     if(db.stk[name] !== undefined) {
-                        db.stk[name] = Math.max(0, db.stk[name] - qty);
+                        if(typeof db.stk[name] === 'object') {
+                            db.stk[name].qty = Math.max(0, db.stk[name].qty - qty);
+                        } else {
+                            db.stk[name] = Math.max(0, db.stk[name] - qty);
+                        }
                     }
                 }
             });
 
             if(!valid) return alert("Please enter valid item description.");
 
+            const custName = document.getElementById('c-name').value.trim().toUpperCase();
+            const custPhone = document.getElementById('c-phone').value.trim();
+
+            if(custName && !db.customers[custName]) {
+                db.customers[custName] = { phone: custPhone };
+            }
+
             const invoice = {
                 no: document.getElementById('inv-no').innerText,
                 date: document.getElementById('cur-date').innerText,
-                name: document.getElementById('c-name').value.trim(),
-                phone: document.getElementById('c-phone').value.trim(),
+                name: custName,
+                phone: custPhone,
                 items: items,
                 total: document.getElementById('g-total').innerText,
                 paid: document.getElementById('paid-amt').value,
@@ -803,6 +1076,7 @@
 
             saveDb(); 
             updateStockDataList();
+            updateCustomerDataList();
             document.getElementById('bill-counter').innerText = db.invs.length;
             renderHistory(db.invs);
 
