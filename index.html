@@ -1,378 +1,1150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SHAHIN SHOP MANAGER | Cloud Portal</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHAHIN SHOP MANAGER | Cloud Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --brand: #0f172a; 
+            --primary: #2563eb; 
+            --danger: #e11d48; 
+            --success: #10b981; 
+        }
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e1b4b 100%); 
+            margin: 0; 
+            padding: 20px; 
+            color: #1e293b; 
+            min-height: 100vh;
+            background-attachment: fixed;
+        }
 
-    body {
-      background-color: #e9ecef;
-      color: #333;
-      padding: 10px;
-    }
+        #auth-screen { 
+            max-width: 420px; 
+            margin: 60px auto; 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            padding: 35px; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+            text-align: center; 
+        }
 
-    /* Top Navigation Bar */
-    .navbar {
-      display: flex;
-      background-color: #f8f9fa;
-      border: 1px solid #dcdcdc;
-      border-radius: 6px;
-      padding: 8px 15px;
-      margin-bottom: 15px;
-      align-items: center;
-      gap: 10px;
-    }
+        .brand-header-flex { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .input-f { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
+        .input-f:focus { border-color: var(--primary); }
+        .auth-toggle-link { color: var(--primary); font-weight: bold; cursor: pointer; text-decoration: underline; margin-top: 12px; display: inline-block; font-size: 13px; }
+        .checkbox-container { text-align: left; margin: 10px 0; font-size: 14px; color: #475569; display: flex; align-items: center; gap: 8px; }
+        .hidden { display: none !important; }
+        #main-app { display: none; max-width: 1100px; margin: auto; }
+        .nav-bar { display: flex; gap: 10px; margin-bottom: 25px; background: white; padding: 15px; border-radius: 12px; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex-wrap: wrap; }
+        .btn { padding: 10px 18px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn:hover { opacity: 0.9; }
+        .btn-tab { background: #f1f5f9; color: #475569; }
+        .btn-tab.active { background: var(--primary); color: white; }
+        .invoice-sheet { background: white; width: 100%; max-width: 800px; margin: auto; padding: 40px; position: relative; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-radius: 8px; }
+        .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 40px; color: rgba(0,0,0,0.03); font-weight: bold; pointer-events: none; z-index: 0; font-family: 'Cinzel', serif; width: 100%; text-align: center; white-space: nowrap; }
+        
+        .shop-header { position: relative; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px; min-height: 90px; }
+        .left-branding { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 10px; text-align: left; }
+        .brand-title { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #0f172a; margin: 0; line-height: 1.2; }
+        .developer-sub { font-size: 10px; color: #64748b; margin-top: 2px; font-weight: 500; font-style: italic; }
 
-    .nav-btn {
-      padding: 8px 16px;
-      border: 1px solid #ced4da;
-      background-color: #e9ecef;
-      color: #495057;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    .nav-btn.active {
-      background-color: #007bff;
-      color: white;
-      border-color: #007bff;
-    }
-
-    .user-info {
-      margin-left: auto;
-      font-size: 13px;
-      color: #6c757d;
-    }
-
-    .logout-btn {
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-left: 10px;
-    }
-
-    /* Invoice Card */
-    .card {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 25px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .invoice-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 25px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid #eeeeee;
-    }
-
-    .brand-logo {
-      width: 45px;
-      height: 45px;
-      background-color: #0056b3;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 22px;
-      border-radius: 6px;
-      margin-right: 15px;
-    }
-
-    .brand-details h2 {
-      font-size: 20px;
-      color: #1a252f;
-      letter-spacing: 0.5px;
-    }
-
-    .brand-details p {
-      font-size: 12px;
-      color: #6c757d;
-      margin-top: 2px;
-    }
-
-    /* Invoice Meta Info */
-    .invoice-meta {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 6px;
-    }
-
-    .customer-info h4, .invoice-date h4 {
-      font-size: 11px;
-      color: #888;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .input-field {
-      display: block;
-      padding: 6px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-bottom: 5px;
-      font-size: 13px;
-      width: 220px;
-    }
-
-    /* Items Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 15px;
-    }
-
-    th {
-      background-color: #f1f3f5;
-      color: #495057;
-      font-size: 12px;
-      text-transform: uppercase;
-      text-align: left;
-      padding: 10px;
-      border-bottom: 2px solid #dee2e6;
-    }
-
-    td {
-      padding: 8px 10px;
-      border-bottom: 1px solid #e9ecef;
-    }
-
-    table input {
-      width: 100%;
-      padding: 6px;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-
-    .btn-add-item {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 4px;
-      font-size: 13px;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    .btn-remove {
-      color: #dc3545;
-      background: none;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    /* Profit & Total Dashboard Box */
-    .summary-container {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 15px;
-    }
-
-    .summary-card {
-      width: 280px;
-      background-color: #f8f9fa;
-      border: 1px solid #e9ecef;
-      border-radius: 6px;
-      padding: 12px 15px;
-    }
-
-    .summary-line {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 8px;
-      color: #495057;
-    }
-
-    .summary-line.grand-total {
-      font-size: 16px;
-      font-weight: bold;
-      color: #0056b3;
-      border-top: 1px solid #dee2e6;
-      padding-top: 8px;
-    }
-
-    .summary-line.net-profit {
-      font-size: 14px;
-      font-weight: bold;
-      color: #28a745;
-    }
-
-    /* Customer Print Layout Rules */
-    @media print {
-      .navbar, .btn-add-item, .btn-remove, .cost-column, .cost-summary-line {
-        display: none !important;
-      }
-      body {
-        background: white;
-        padding: 0;
-      }
-      .card {
-        box-shadow: none;
-        padding: 0;
-        max-width: 100%;
-      }
-    }
-  </style>
+        .center-shop-details { width: 60%; margin: 0 auto; text-align: center; }
+        .shop-name { font-family: 'Cinzel', serif; font-size: 22px; margin: 0 0 4px 0; color: #000; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; text-align: center; }
+        .shop-contact-input { width: 100%; border: none; border-bottom: 1px dashed #ccc; outline: none; font-size: 13px; font-family: inherit; margin: 2px 0; background: transparent; text-align: center; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; z-index: 1; position: relative; }
+        th { background: #f8fafc; border: 1px solid #000; padding: 10px; text-align: left; font-size: 14px; }
+        td { border: 1px solid #000; padding: 8px; }
+        .cell-input { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-family: inherit; }
+        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .stat-card h4 { margin: 0 0 8px 0; color: #64748b; font-size: 13px; font-weight: 500; }
+        .stat-card .amt { font-size: 22px; font-weight: bold; color: #0f172a; margin: 0; }
+        .auth-block { margin-top: 80px; text-align: right; }
+        .auth-line { display: inline-block; border-top: 1px solid #000; width: 220px; padding-top: 8px; font-weight: bold; text-align: center; font-size: 13px; }
+        .btn-del { background: #fee2e2; color: #b91c1c; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; margin: 0; }
+            .invoice-sheet { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; min-height: auto; }
+            .cell-input, .shop-contact-input { border: none !important; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
-  <div class="navbar">
-    <button class="nav-btn active">Create Bill</button>
-    <button class="nav-btn">Customers</button>
-    <button class="nav-btn">Analytics & Profit</button>
-    <button class="nav-btn">Inventory</button>
-    <button class="nav-btn">History</button>
-    <button class="nav-btn">Profile & Settings</button>
-    
-    <div class="user-info">
-      User: Shahin Alom (7086992870) | Invoices: 86
-      <button class="logout-btn">Logout</button>
-    </div>
-  </div>
-
-  <!-- Invoice Form Card -->
-  <div class="card">
-    <div class="invoice-header">
-      <div class="brand-logo">S</div>
-      <div class="brand-details">
-        <h2>SHAHIN MOBI TECH</h2>
-        <p>Developed By Shahin | Nagarbera :: Kamrup :: Assam :: 781127 | Phone: 7086992870</p>
-      </div>
-    </div>
-
-    <div class="invoice-meta">
-      <div class="customer-info">
-        <h4>Customer Details:</h4>
-        <input type="text" class="input-field" placeholder="Full Name">
-        <input type="text" class="input-field" placeholder="Phone / Address">
-      </div>
-      <div class="invoice-date" style="text-align: right;">
-        <p style="font-size: 12px; color: #6c757d;">Date: <span id="current-date">23/8/2026</span></p>
-        <p style="font-size: 12px; color: #6c757d;">Invoice No: #0087</p>
-      </div>
-    </div>
-
-    <!-- Items Table -->
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 35%;">Description</th>
-          <th style="width: 10%;">Qty</th>
-          <th class="cost-column" style="width: 15%;">Sell Cost (₹)</th>
-          <th style="width: 15%;">Sell Price (₹)</th>
-          <th style="width: 20%;">Total (₹)</th>
-          <th style="width: 5%;"></th>
-        </tr>
-      </thead>
-      <tbody id="invoice-items">
-        <tr class="item-row">
-          <td><input type="text" placeholder="Item Description"></td>
-          <td><input type="number" class="item-qty" value="1" min="1" oninput="calculateInvoice()"></td>
-          <td class="cost-column"><input type="number" class="item-cost" value="0" min="0" oninput="calculateInvoice()"></td>
-          <td><input type="number" class="item-price" value="0" min="0" oninput="calculateInvoice()"></td>
-          <td class="item-total" style="font-weight: 500; font-size: 14px;">0.00</td>
-          <td><button class="btn-remove" onclick="removeRow(this)">×</button></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <button class="btn-add-item" onclick="addRow()">+ Add Item</button>
-
-    <!-- Total & Profit Display -->
-    <div class="summary-container">
-      <div class="summary-card">
-        <div class="summary-line cost-summary-line">
-          <span>Total Sell Cost:</span>
-          <span>₹<span id="display-total-cost">0.00</span></span>
+    <!-- AUTH SCREEN -->
+    <div id="auth-screen">
+        <div class="brand-header-flex">
+            <svg width="36" height="36" viewBox="0 0 100 100">
+                <rect width="100" height="100" rx="20" fill="#0f172a"/>
+                <path d="M30 30 L70 30 L70 70 L30 70 Z" fill="none" stroke="#2563eb" stroke-width="8"/>
+                <text x="50" y="62" font-family="Arial" font-size="38" font-weight="bold" fill="#ffffff" text-anchor="middle">S</text>
+            </svg>
+            <div>
+                <h2 style="font-family: 'Cinzel', serif; margin:0; letter-spacing: 0.5px; font-size: 18px; color: var(--brand);">SHAHIN SHOP MANAGER</h2>
+                <p style="margin-top:2px; margin-bottom:0; color:#2563eb; letter-spacing:1px; font-size: 11px; font-weight: 700; text-align:left;">CLOUD PORTAL</p>
+            </div>
         </div>
-        <div class="summary-line grand-total">
-          <span>Grand Total:</span>
-          <span>₹<span id="display-grand-total">0.00</span></span>
+        
+        <!-- LOGIN SECTION -->
+        <div id="login-section" style="margin-top: 20px;">
+            <h3 style="margin-bottom: 15px; color: #334155;">Login to Account</h3>
+            <input type="tel" id="login-phone" class="input-f" placeholder="Mobile Number">
+            <input type="password" id="login-pass" class="input-f" placeholder="Password">
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="remember-me">
+                <label for="remember-me">Remember Login Details</label>
+            </div>
+            
+            <button id="login-btn" onclick="login()" class="btn" style="background:var(--brand); color:white; width:100%; margin-top: 10px; padding: 12px;">Enter Dashboard</button>
+            <br>
+            <span class="auth-toggle-link" onclick="toggleAuth('register')">New User? Register Here</span> | 
+            <span class="auth-toggle-link" onclick="toggleAuth('forgot')">Forgot Password?</span>
         </div>
-        <div class="summary-line net-profit cost-summary-line">
-          <span>Net Profit:</span>
-          <span>₹<span id="display-net-profit">0.00</span></span>
+
+        <!-- REGISTER SECTION -->
+        <div id="register-section" class="hidden" style="margin-top: 20px;">
+            <h3 style="margin-bottom: 15px; color: #334155;">Create Account</h3>
+            
+            <div id="reg-step-1">
+                <input type="text" id="reg-owner" class="input-f" placeholder="Owner Name">
+                <input type="text" id="reg-shop" class="input-f" placeholder="Shop Name">
+                <input type="tel" id="reg-phone" class="input-f" placeholder="Mobile Number">
+                <input type="password" id="reg-pass" class="input-f" placeholder="Set Password">
+                <button onclick="sendOTP()" class="btn" style="background:var(--primary); color:white; width:100%; margin-top: 10px; padding: 12px;">Send OTP</button>
+            </div>
+
+            <div id="reg-step-2" class="hidden">
+                <p style="font-size: 13px; color: #64748b;">OTP sent! Enter default OTP <strong style="color:var(--primary)">1234</strong></p>
+                <input type="text" id="reg-otp" class="input-f" placeholder="Enter 4-Digit OTP" maxlength="4" style="text-align: center; letter-spacing: 4px; font-weight: bold;">
+                <button id="reg-btn" onclick="verifyAndRegister()" class="btn" style="background:var(--success); color:white; width:100%; margin-top: 10px; padding: 12px;">Verify & Register</button>
+            </div>
+
+            <span class="auth-toggle-link" onclick="toggleAuth('login')">Already have an account? Login</span>
         </div>
-      </div>
+
+        <!-- FORGOT PASSWORD SECTION -->
+        <div id="forgot-section" class="hidden" style="margin-top: 20px;">
+            <h3 style="margin-bottom: 15px; color: #334155;">Reset Password</h3>
+            <input type="tel" id="reset-phone" class="input-f" placeholder="Registered Mobile Number">
+            <input type="text" id="reset-otp" class="input-f" placeholder="Enter OTP (1234)" maxlength="4" style="text-align: center;">
+            <input type="password" id="reset-new-pass" class="input-f" placeholder="Enter New Password">
+            <button onclick="resetPasswordFromLogin()" class="btn" style="background:var(--primary); color:white; width:100%; margin-top: 10px; padding: 12px;">Update Password</button>
+            <br>
+            <span class="auth-toggle-link" onclick="toggleAuth('login')">Back to Login</span>
+        </div>
     </div>
-  </div>
 
-  <script>
-    function addRow() {
-      const tbody = document.getElementById('invoice-items');
-      const tr = document.createElement('tr');
-      tr.className = 'item-row';
-      tr.innerHTML = `
-        <td><input type="text" placeholder="Item Description"></td>
-        <td><input type="number" class="item-qty" value="1" min="1" oninput="calculateInvoice()"></td>
-        <td class="cost-column"><input type="number" class="item-cost" value="0" min="0" oninput="calculateInvoice()"></td>
-        <td><input type="number" class="item-price" value="0" min="0" oninput="calculateInvoice()"></td>
-        <td class="item-total" style="font-weight: 500; font-size: 14px;">0.00</td>
-        <td><button class="btn-remove" onclick="removeRow(this)">×</button></td>
-      `;
-      tbody.appendChild(tr);
-    }
+    <!-- MAIN DASHBOARD -->
+    <div id="main-app">
+        <div class="nav-bar no-print">
+            <button class="btn btn-tab active" id="btn-bill" onclick="showTab('bill')">Create Bill</button>
+            <button class="btn btn-tab" id="btn-customers" onclick="showTab('customers')">Customers</button>
+            <button class="btn btn-tab" id="btn-profit" onclick="showTab('profit')">Analytics & Profit</button>
+            <button class="btn btn-tab" id="btn-stock" onclick="showTab('stock')">Inventory</button>
+            <button class="btn btn-tab" id="btn-his" onclick="showTab('his')">History</button>
+            <button class="btn btn-tab" id="btn-profile" onclick="showTab('profile')">Profile & Settings</button>
+            <div style="margin-left: auto; font-weight: bold; color:var(--primary); font-size: 14px;">
+                User: <span id="user-display" style="color:var(--brand)"></span> | Invoices: <span id="bill-counter">0</span>
+            </div>
+            <button onclick="logout()" class="btn" style="background:var(--danger); color:white; margin-left:15px">Logout</button>
+        </div>
 
-    function removeRow(button) {
-      const row = button.closest('tr');
-      const tbody = document.getElementById('invoice-items');
-      if (tbody.rows.length > 1) {
-        row.remove();
-        calculateInvoice();
-      }
-    }
+        <!-- TAB: CREATE BILL -->
+        <div id="tab-bill">
+            <div class="invoice-sheet" id="print-sheet">
+                <div class="watermark">SHAHIN SHOP MANAGER</div>
+                
+                <div class="shop-header">
+                    <div class="left-branding">
+                        <svg width="40" height="40" viewBox="0 0 100 100" style="border-radius: 6px;">
+                            <rect width="100" height="100" rx="20" fill="#0f172a"/>
+                            <path d="M30 30 L70 30 L70 70 L30 70 Z" fill="none" stroke="#2563eb" stroke-width="8"/>
+                            <text x="50" y="62" font-family="Arial" font-size="38" font-weight="bold" fill="#ffffff" text-anchor="middle">S</text>
+                        </svg>
+                        <div>
+                            <div class="brand-title">SHAHIN SHOP MANAGER</div>
+                            <div class="developer-sub">Developed By Shahin</div>
+                        </div>
+                    </div>
 
-    function calculateInvoice() {
-      let grandTotal = 0;
-      let totalCost = 0;
+                    <div class="center-shop-details">
+                        <h1 class="shop-name" id="inv-shop-title">USER SHOP NAME</h1>
+                        <input type="text" id="my-address" class="shop-contact-input" placeholder="Your Address">
+                        <input type="text" id="my-phone" class="shop-contact-input" placeholder="Your Phone Number" style="font-weight: bold;">
+                    </div>
+                </div>
 
-      const rows = document.querySelectorAll('.item-row');
-      rows.forEach(row => {
-        const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
-        const cost = parseFloat(row.querySelector('.item-cost').value) || 0;
-        const price = parseFloat(row.querySelector('.item-price').value) || 0;
+                <div style="display: flex; justify-content: space-between; margin-bottom: 25px; gap: 20px;">
+                    <div style="border: 1px solid #000; padding: 12px; width: 320px; border-radius: 4px;">
+                        <strong style="font-size: 12px; letter-spacing: 1px;">CUSTOMER DETAILS:</strong>
+                        <input type="text" id="c-name" class="cell-input" list="customer-list" placeholder="Full Name" onchange="autoFillCustomerInfo(this.value)" style="margin-top:4px;">
+                        <input type="text" id="c-phone" class="cell-input" placeholder="Phone / Address">
+                        <datalist id="customer-list"></datalist>
+                    </div>
+                    <div style="text-align: right; font-size: 14px;">
+                        <p style="margin: 4px 0;">Date: <span id="cur-date"></span></p>
+                        <p style="margin: 4px 0;">Invoice No: #<span id="inv-no">0001</span></p>
+                    </div>
+                </div>
 
-        const rowTotal = qty * price;
-        const rowCostTotal = qty * cost;
+                <datalist id="stock-list"></datalist>
 
-        row.querySelector('.item-total').innerText = rowTotal.toFixed(2);
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th width="70">Qty</th>
+                            <th width="110">Price</th>
+                            <th width="110">Total</th>
+                            <th width="40" class="no-print"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="bill-items"></tbody>
+                </table>
+                <button class="no-print btn" onclick="addBillRow()" style="margin-top:12px; background:#475569; color:white">+ Add Item</button>
 
-        grandTotal += rowTotal;
-        totalCost += rowCostTotal;
-      });
+                <div style="text-align: right; margin-top: 30px; font-size: 16px;">
+                    <div style="margin-bottom: 8px;">Grand Total: <strong>₹ <span id="g-total">0.00</span></strong></div>
+                    <div class="no-print" style="color:var(--success); margin-bottom: 6px;">
+                        Paid: ₹ <input type="number" id="paid-amt" value="0" oninput="calc()" style="width:100px; text-align:right; font-weight:bold; padding:4px;" min="0">
+                    </div>
+                    <div class="no-print" style="color:var(--danger)">
+                        Pending: <strong>₹ <span id="pend-amt">0.00</span></strong>
+                    </div>
 
-      const netProfit = grandTotal - totalCost;
+                    <div id="print-payment" style="display:none; font-size: 14px; border-top: 1px dashed #000; padding-top: 8px; margin-top: 8px;">
+                        <div>Paid Amount: ₹ <span id="pr-paid">0.00</span></div>
+                        <div>Pending Amount: ₹ <span id="pr-pend">0.00</span></div>
+                    </div>
+                </div>
 
-      document.getElementById('display-grand-total').innerText = grandTotal.toFixed(2);
-      document.getElementById('display-total-cost').innerText = totalCost.toFixed(2);
-      document.getElementById('display-net-profit').innerText = netProfit.toFixed(2);
-    }
-  </script>
+                <div class="auth-block">
+                    <div class="auth-line"><span id="inv-sign-name">USER SHOP NAME</span><br><small style="font-weight: normal;">(Authorized Signatory)</small></div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0" class="no-print">
+                <button onclick="saveAndPrint()" class="btn" style="background:var(--success); color:white; padding: 14px 50px; font-size: 16px;">Save & Print Invoice</button>
+                <button onclick="resetInv()" class="btn" style="background:#64748b; color:white; padding: 14px 30px; font-size: 16px; margin-left: 10px;">New Invoice</button>
+            </div>
+        </div>
+
+        <!-- TAB: CUSTOMERS & PENDING BALANCE -->
+        <div id="tab-customers" style="display: none;">
+            <div class="card">
+                <h3 style="margin-top:0;">Add / Update Customer Directory</h3>
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <input type="text" id="cust-add-name" class="input-f" style="margin:0; flex: 2; min-width: 180px;" placeholder="Customer Name">
+                    <input type="tel" id="cust-add-phone" class="input-f" style="margin:0; flex: 2; min-width: 150px;" placeholder="Phone Number">
+                    <button onclick="addCustomer()" class="btn" style="background:var(--primary); color:white;">Save Customer</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0;">Customer Directory & Pending Balances</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Phone</th>
+                            <th>Total Purchases</th>
+                            <th>Pending Balance</th>
+                            <th width="100" class="no-print">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customer-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB: DAILY, MONTHLY & ANNUAL PROFIT -->
+        <div id="tab-profit" style="display: none;">
+            <div class="stats-grid">
+                <div class="stat-card" style="border-color: #3b82f6;">
+                    <h4>TODAY'S PROFIT</h4>
+                    <p class="amt" style="color:#2563eb;">₹ <span id="p-daily">0.00</span></p>
+                </div>
+                <div class="stat-card" style="border-color: #10b981;">
+                    <h4>THIS MONTH'S PROFIT</h4>
+                    <p class="amt" style="color:#059669;">₹ <span id="p-monthly">0.00</span></p>
+                </div>
+                <div class="stat-card" style="border-color: #8b5cf6;">
+                    <h4>THIS YEAR'S PROFIT</h4>
+                    <p class="amt" style="color:#7c3aed;">₹ <span id="p-annual">0.00</span></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0;">Profit Breakdown by Sales History</h3>
+                <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Profit is calculated based on Selling Price minus Inventory Purchase Price (Cost) per unit.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Invoice No</th>
+                            <th>Customer</th>
+                            <th>Sales Amount</th>
+                            <th>Calculated Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profit-history-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB: INVENTORY -->
+        <div id="tab-stock" style="display: none;">
+            <div class="card">
+                <h3 style="margin-top:0;">Add / Update Stock (Stock In)</h3>
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <input type="text" id="sk-name" class="input-f" style="margin:0; flex: 2; min-width: 180px;" placeholder="Product Name">
+                    <input type="number" id="sk-cost" class="input-f" style="margin:0; flex: 1; min-width: 110px;" placeholder="Purchase Cost (₹)" min="0">
+                    <input type="number" id="sk-qty" class="input-f" style="margin:0; flex: 1; min-width: 90px;" placeholder="Quantity" min="1">
+                    <button onclick="addStock()" class="btn" style="background:var(--primary); color:white;">Update Stock</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3 style="margin-top:0;">Inventory Status</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Unit Purchase Cost</th>
+                            <th>Stock Level</th>
+                            <th>Status</th>
+                            <th width="80" class="no-print">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB: HISTORY -->
+        <div id="tab-his" style="display: none;">
+            <input type="text" id="search-bar" class="input-f" placeholder="Search by Invoice No, Name, or Phone..." oninput="search()" style="margin-bottom: 15px;">
+            <div id="his-list"></div>
+        </div>
+
+        <!-- TAB: PROFILE & SETTINGS -->
+        <div id="tab-profile" style="display: none;">
+            <div class="card" style="max-width: 600px; margin: auto;">
+                <h3 style="margin-top:0; color:var(--brand); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">User & Shop Profile</h3>
+                
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Owner Name:</label>
+                <input type="text" id="prof-owner" class="input-f" placeholder="Owner Name">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Shop Name:</label>
+                <input type="text" id="prof-shop" class="input-f" placeholder="Shop Name">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Mobile Number (Login ID):</label>
+                <input type="text" id="prof-phone" class="input-f" readonly style="background: #f1f5f9; cursor: not-allowed;">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Shop Address:</label>
+                <input type="text" id="prof-address" class="input-f" placeholder="Address">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Shop Contact Phone:</label>
+                <input type="text" id="prof-contact-phone" class="input-f" placeholder="Phone Number for Invoice">
+
+                <button onclick="updateProfile()" class="btn" style="background:var(--success); color:white; width: 100%; margin-top: 15px; padding: 12px;">Save Profile Details</button>
+            </div>
+
+            <!-- JSON BACKUP & RESTORE SECTION -->
+            <div class="card" style="max-width: 600px; margin: 20px auto;">
+                <h3 style="margin-top:0; color:var(--brand); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Data Backup & Restore (JSON)</h3>
+                <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Export your complete shop data as a JSON file or restore from a previously exported JSON backup file.</p>
+                
+                <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                    <button onclick="exportJsonData()" class="btn" style="background:var(--primary); color:white; flex:1; padding: 12px;">Export Data (JSON)</button>
+                    <label class="btn" style="background:#475569; color:white; flex:1; padding: 12px; text-align:center; cursor:pointer;">
+                        Restore Data (JSON)
+                        <input type="file" id="json-restore-file" accept=".json" onchange="restoreJsonData(event)" style="display:none;">
+                    </label>
+                </div>
+            </div>
+
+            <div class="card" style="max-width: 600px; margin: 20px auto;">
+                <h3 style="margin-top:0; color:var(--brand); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Security & Password Reset</h3>
+                
+                <label style="font-weight:bold; font-size:13px; color:#475569;">Old Password:</label>
+                <input type="password" id="pass-old" class="input-f" placeholder="Current Password">
+
+                <label style="font-weight:bold; font-size:13px; color:#475569;">New Password:</label>
+                <input type="password" id="pass-new" class="input-f" placeholder="Enter New Password">
+
+                <button onclick="changePassword()" class="btn" style="background:var(--primary); color:white; width: 100%; margin-top: 15px; padding: 12px;">Change Password</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DB_URL = "https://shahin-mobi-tech-default-rtdb.firebaseio.com";
+        let currentUser = "";
+        let currentUserName = "";
+        let currentUserShop = "";
+        let db = { invs: [], stk: {}, customers: {}, profile: {} };
+
+        window.onload = function() {
+            checkRememberedUser();
+        };
+
+        function toggleAuth(type) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('register-section').classList.add('hidden');
+            document.getElementById('forgot-section').classList.add('hidden');
+
+            if (type === 'register') {
+                document.getElementById('register-section').classList.remove('hidden');
+            } else if (type === 'forgot') {
+                document.getElementById('forgot-section').classList.remove('hidden');
+            } else {
+                document.getElementById('login-section').classList.remove('hidden');
+            }
+        }
+
+        function sendOTP() {
+            const owner = document.getElementById('reg-owner').value.trim();
+            const shop = document.getElementById('reg-shop').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const pass = document.getElementById('reg-pass').value.trim();
+            
+            if (!owner || !shop) return alert("Please enter Owner Name and Shop Name.");
+            if (phone.length < 10) return alert("Please enter a valid Mobile Number.");
+            if (pass.length < 4) return alert("Password must be at least 4 characters.");
+            
+            document.getElementById('reg-step-1').classList.add('hidden');
+            document.getElementById('reg-step-2').classList.remove('hidden');
+            alert("OTP Sent! Default OTP is 1234");
+        }
+
+        async function verifyAndRegister() {
+            const owner = document.getElementById('reg-owner').value.trim();
+            const shop = document.getElementById('reg-shop').value.trim();
+            const rawPhone = document.getElementById('reg-phone').value.trim();
+            const phone = rawPhone.replace(/[^0-9]/g, '');
+            const pass = document.getElementById('reg-pass').value.trim();
+            const otp = document.getElementById('reg-otp').value.trim();
+
+            if (otp !== '1234') return alert("Invalid OTP! Enter 1234");
+
+            const regBtn = document.getElementById('reg-btn');
+            regBtn.innerText = "Registering...";
+            regBtn.disabled = true;
+
+            try {
+                const res = await fetch(`${DB_URL}/users/${phone}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        ownerName: owner, 
+                        shopName: shop, 
+                        password: pass, 
+                        createdAt: new Date().toISOString() 
+                    })
+                });
+
+                if (res.ok) {
+                    alert("Registration Successful! Now you can login.");
+                    document.getElementById('reg-step-2').classList.add('hidden');
+                    document.getElementById('reg-step-1').classList.remove('hidden');
+                    document.getElementById('login-phone').value = phone;
+                    document.getElementById('login-pass').value = pass;
+                    toggleAuth('login');
+                } else {
+                    alert("Cloud Server Error. Please check Firebase Rules.");
+                }
+            } catch (err) {
+                alert("Network Connection Error!");
+            } finally {
+                regBtn.innerText = "Verify & Register";
+                regBtn.disabled = false;
+            }
+        }
+
+        async function resetPasswordFromLogin() {
+            const phone = document.getElementById('reset-phone').value.trim().replace(/[^0-9]/g, '');
+            const otp = document.getElementById('reset-otp').value.trim();
+            const newPass = document.getElementById('reset-new-pass').value.trim();
+
+            if(!phone || otp !== '1234' || newPass.length < 4) {
+                return alert("Please enter valid Mobile Number, OTP (1234) and New Password (min 4 chars).");
+            }
+
+            try {
+                const res = await fetch(`${DB_URL}/users/${phone}.json`);
+                const userData = await res.json();
+
+                if(!userData) return alert("Account not found!");
+
+                userData.password = newPass;
+                await fetch(`${DB_URL}/users/${phone}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                alert("Password updated successfully! Please login.");
+                toggleAuth('login');
+            } catch(e) {
+                alert("Error resetting password!");
+            }
+        }
+
+        async function login() {
+            const rawPhone = document.getElementById('login-phone').value.trim();
+            const phone = rawPhone.replace(/[^0-9]/g, '');
+            const pass = document.getElementById('login-pass').value.trim();
+            const rememberMe = document.getElementById('remember-me').checked;
+
+            if (!phone || !pass) return alert("Please enter Mobile Number and Password.");
+
+            const loginBtn = document.getElementById('login-btn');
+            loginBtn.innerText = "Logging in...";
+            loginBtn.disabled = true;
+
+            try {
+                const res = await fetch(`${DB_URL}/users/${phone}.json`);
+                const userData = await res.json();
+
+                if (!userData) {
+                    alert("Account not found! Register first.");
+                    return;
+                }
+
+                if (userData.password !== pass) {
+                    alert("Incorrect Password!");
+                    return;
+                }
+
+                currentUser = phone;
+                currentUserName = userData.ownerName || phone;
+                currentUserShop = userData.shopName || "MY SHOP";
+
+                if (rememberMe) {
+                    localStorage.setItem('shahin_remembered_user', phone);
+                } else {
+                    localStorage.removeItem('shahin_remembered_user');
+                }
+
+                launchDashboard();
+            } catch (err) {
+                alert("Cloud Connection Error! Please check internet.");
+            } finally {
+                loginBtn.innerText = "Enter Dashboard";
+                loginBtn.disabled = false;
+            }
+        }
+
+        function checkRememberedUser() {
+            const savedUser = localStorage.getItem('shahin_remembered_user');
+            if (savedUser) {
+                currentUser = savedUser;
+                launchDashboard();
+            }
+        }
+
+        async function launchDashboard() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            
+            await loadCloudDb();
+            resetInv();
+        }
+
+        function logout() {
+            localStorage.removeItem('shahin_remembered_user');
+            location.reload();
+        }
+
+        async function saveDb() { 
+            if(currentUser) {
+                db.profile = {
+                    ownerName: document.getElementById('prof-owner').value.trim(),
+                    shopName: document.getElementById('prof-shop').value.trim(),
+                    address: document.getElementById('my-address').value.trim(),
+                    phone: document.getElementById('my-phone').value.trim()
+                };
+
+                try {
+                    await fetch(`${DB_URL}/data/${currentUser}.json`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(db)
+                    });
+                } catch(e) {
+                    console.error("Cloud Save Failed", e);
+                }
+            }
+        }
+
+        async function loadCloudDb() {
+            try {
+                const userRes = await fetch(`${DB_URL}/users/${currentUser}.json`);
+                const uData = await userRes.json();
+                if(uData) {
+                    currentUserName = uData.ownerName || currentUser;
+                    currentUserShop = uData.shopName || "MY SHOP";
+                }
+
+                const res = await fetch(`${DB_URL}/data/${currentUser}.json`);
+                const cloudData = await res.json();
+                if(cloudData) {
+                    db = cloudData;
+                    if(!db.stk) db.stk = {};
+                    if(!db.invs) db.invs = [];
+                    if(!db.customers) db.customers = {};
+                    if(!db.profile) db.profile = {};
+                } else {
+                    db = { invs: [], stk: {}, customers: {}, profile: {} };
+                }
+            } catch(e) {
+                db = { invs: [], stk: {}, customers: {}, profile: {} };
+            }
+
+            document.getElementById('user-display').innerText = `${currentUserName} (${currentUser})`;
+            document.getElementById('prof-owner').value = db.profile.ownerName || currentUserName;
+            document.getElementById('prof-shop').value = db.profile.shopName || currentUserShop;
+            document.getElementById('prof-phone').value = currentUser;
+            document.getElementById('prof-address').value = db.profile.address || "";
+            document.getElementById('prof-contact-phone').value = db.profile.phone || `Phone: ${currentUser}`;
+
+            document.getElementById('my-address').value = db.profile.address || "";
+            document.getElementById('my-phone').value = db.profile.phone || `Phone: ${currentUser}`;
+            
+            const shopTitle = db.profile.shopName || currentUserShop;
+            document.getElementById('inv-shop-title').innerText = shopTitle;
+            document.getElementById('inv-sign-name').innerText = shopTitle;
+
+            document.getElementById('bill-counter').innerText = db.invs.length;
+            updateStockDataList();
+            updateCustomerDataList();
+            renderHistory(db.invs);
+        }
+
+        /* EXPORT & RESTORE JSON FUNCTIONS */
+        function exportJsonData() {
+            if(!db) return alert("No data available to export.");
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `shahin_shop_backup_${currentUser}_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function restoreJsonData(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const importedDb = JSON.parse(e.target.result);
+                    if(typeof importedDb !== 'object') throw new Error("Invalid JSON structure");
+
+                    if(confirm("Are you sure you want to restore data from this JSON file? Existing cloud data will be overwritten.")) {
+                        db = importedDb;
+                        if(!db.stk) db.stk = {};
+                        if(!db.invs) db.invs = [];
+                        if(!db.customers) db.customers = {};
+                        if(!db.profile) db.profile = {};
+
+                        await saveDb();
+                        await loadCloudDb();
+                        alert("Data successfully restored from JSON file and updated to Cloud!");
+                    }
+                } catch(err) {
+                    alert("Failed to parse JSON file. Please upload a valid backup JSON file.");
+                } finally {
+                    event.target.value = ""; // Reset file input
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function updateStockDataList() {
+            const dl = document.getElementById('stock-list');
+            dl.innerHTML = "";
+            Object.keys(db.stk).forEach(item => {
+                const stockObj = db.stk[item];
+                const qty = typeof stockObj === 'object' ? stockObj.qty : stockObj;
+                dl.innerHTML += `<option value="${item}">Available Stock: ${qty}</option>`;
+            });
+        }
+
+        function updateCustomerDataList() {
+            const dl = document.getElementById('customer-list');
+            dl.innerHTML = "";
+            Object.keys(db.customers).forEach(cName => {
+                dl.innerHTML += `<option value="${cName}">${db.customers[cName].phone || ''}</option>`;
+            });
+        }
+
+        function autoFillCustomerInfo(val) {
+            const cName = val.trim().toUpperCase();
+            if(db.customers[cName]) {
+                document.getElementById('c-phone').value = db.customers[cName].phone || "";
+            }
+        }
+
+        async function updateProfile() {
+            const owner = document.getElementById('prof-owner').value.trim();
+            const shop = document.getElementById('prof-shop').value.trim();
+            const addr = document.getElementById('prof-address').value.trim();
+            const phone = document.getElementById('prof-contact-phone').value.trim();
+
+            if(!owner || !shop) return alert("Owner Name and Shop Name are required!");
+
+            document.getElementById('my-address').value = addr;
+            document.getElementById('my-phone').value = phone;
+            document.getElementById('inv-shop-title').innerText = shop;
+            document.getElementById('inv-sign-name').innerText = shop;
+
+            await fetch(`${DB_URL}/users/${currentUser}/ownerName.json`, { method: 'PUT', body: JSON.stringify(owner) });
+            await fetch(`${DB_URL}/users/${currentUser}/shopName.json`, { method: 'PUT', body: JSON.stringify(shop) });
+
+            saveDb();
+            alert("Profile Details Updated Successfully!");
+            document.getElementById('user-display').innerText = `${owner} (${currentUser})`;
+        }
+
+        async function changePassword() {
+            const oldP = document.getElementById('pass-old').value.trim();
+            const newP = document.getElementById('pass-new').value.trim();
+
+            if(!oldP || !newP) return alert("Please enter both old and new password.");
+            if(newP.length < 4) return alert("New Password must be at least 4 characters.");
+
+            try {
+                const res = await fetch(`${DB_URL}/users/${currentUser}.json`);
+                const userData = await res.json();
+
+                if(userData.password !== oldP) {
+                    return alert("Incorrect Old Password!");
+                }
+
+                userData.password = newP;
+                await fetch(`${DB_URL}/users/${currentUser}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                alert("Password changed successfully!");
+                document.getElementById('pass-old').value = "";
+                document.getElementById('pass-new').value = "";
+            } catch(e) {
+                alert("Error updating password.");
+            }
+        }
+
+        function showTab(t) {
+            ['bill', 'customers', 'profit', 'stock', 'his', 'profile'].forEach(tab => {
+                document.getElementById('tab-' + tab).style.display = t === tab ? 'block' : 'none';
+                document.getElementById('btn-' + tab).classList.toggle('active', t === tab);
+            });
+            if(t === 'stock') renderStock();
+            if(t === 'customers') renderCustomers();
+            if(t === 'profit') renderProfit();
+        }
+
+        /* CUSTOMER MANAGEMENT FUNCTIONS */
+        function addCustomer() {
+            const name = document.getElementById('cust-add-name').value.trim().toUpperCase();
+            const phone = document.getElementById('cust-add-phone').value.trim();
+            if(!name) return alert("Customer name is required!");
+
+            if(!db.customers[name]) {
+                db.customers[name] = { phone: phone };
+            } else {
+                db.customers[name].phone = phone;
+            }
+
+            saveDb();
+            updateCustomerDataList();
+            renderCustomers();
+            document.getElementById('cust-add-name').value = "";
+            document.getElementById('cust-add-phone').value = "";
+            alert("Customer saved successfully!");
+        }
+
+        function deleteCustomer(name) {
+            if(confirm(`Remove "${name}" from customer list?`)) {
+                delete db.customers[name];
+                saveDb();
+                updateCustomerDataList();
+                renderCustomers();
+            }
+        }
+
+        function renderCustomers() {
+            const b = document.getElementById('customer-body');
+            b.innerHTML = "";
+
+            const customerPendingMap = {};
+            const customerTotalPurchase = {};
+
+            db.invs.forEach(inv => {
+                const cName = (inv.name || "WALK-IN CUSTOMER").toUpperCase();
+                const pend = parseFloat(inv.pending) || 0;
+                const tot = parseFloat(inv.total) || 0;
+
+                customerPendingMap[cName] = (customerPendingMap[cName] || 0) + pend;
+                customerTotalPurchase[cName] = (customerTotalPurchase[cName] || 0) + tot;
+            });
+
+            const allCustomerNames = Array.from(new Set([...Object.keys(db.customers), ...Object.keys(customerPendingMap)]));
+
+            if(allCustomerNames.length === 0) {
+                b.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No customer data available.</td></tr>`;
+                return;
+            }
+
+            allCustomerNames.forEach(cName => {
+                const phone = db.customers[cName]?.phone || '-';
+                const totalBought = customerTotalPurchase[cName] || 0;
+                const pending = customerPendingMap[cName] || 0;
+
+                b.innerHTML += `<tr>
+                    <td><strong>${cName}</strong></td>
+                    <td>${phone}</td>
+                    <td>₹ ${totalBought.toFixed(2)}</td>
+                    <td style="color:${pending > 0 ? 'var(--danger)' : 'var(--success)'}; font-weight:bold;">
+                        ₹ ${pending.toFixed(2)} ${pending > 0 ? '(Due)' : '(Clear)'}
+                    </td>
+                    <td class="no-print">
+                        ${db.customers[cName] ? `<button onclick="deleteCustomer('${cName}')" class="btn-del">Delete</button>` : '-'}
+                    </td>
+                </tr>`;
+            });
+        }
+
+        /* PROFIT CALCULATION FUNCTIONS */
+        function renderProfit() {
+            const todayStr = new Date().toLocaleDateString('en-IN');
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            let dailyProfit = 0;
+            let monthlyProfit = 0;
+            let annualProfit = 0;
+
+            const tbody = document.getElementById('profit-history-body');
+            tbody.innerHTML = "";
+
+            db.invs.slice().reverse().forEach(inv => {
+                let invCost = 0;
+                let invRevenue = parseFloat(inv.total) || 0;
+
+                inv.items.forEach(it => {
+                    const itemName = it.n.toUpperCase();
+                    const stockItem = db.stk[itemName];
+                    let unitCost = 0;
+                    if(typeof stockItem === 'object' && stockItem.cost) {
+                        unitCost = parseFloat(stockItem.cost) || 0;
+                    }
+                    invCost += (unitCost * (parseInt(it.q) || 0));
+                });
+
+                const invProfit = invRevenue - invCost;
+
+                const parts = inv.date.split('/');
+                let invDateObj = new Date();
+                if(parts.length === 3) {
+                    invDateObj = new Date(parts[2], parts[1] - 1, parts[0]);
+                }
+
+                if(inv.date === todayStr) {
+                    dailyProfit += invProfit;
+                }
+                if(invDateObj.getMonth() === currentMonth && invDateObj.getFullYear() === currentYear) {
+                    monthlyProfit += invProfit;
+                }
+                if(invDateObj.getFullYear() === currentYear) {
+                    annualProfit += invProfit;
+                }
+
+                tbody.innerHTML += `<tr>
+                    <td>${inv.date}</td>
+                    <td>#${inv.no}</td>
+                    <td>${inv.name || 'Walk-in'}</td>
+                    <td>₹ ${invRevenue.toFixed(2)}</td>
+                    <td style="color:${invProfit >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:bold;">₹ ${invProfit.toFixed(2)}</td>
+                </tr>`;
+            });
+
+            document.getElementById('p-daily').innerText = dailyProfit.toFixed(2);
+            document.getElementById('p-monthly').innerText = monthlyProfit.toFixed(2);
+            document.getElementById('p-annual').innerText = annualProfit.toFixed(2);
+        }
+
+        /* STOCK MANAGEMENT */
+        function addStock() {
+            const n = document.getElementById('sk-name').value.trim().toUpperCase();
+            const c = parseFloat(document.getElementById('sk-cost').value) || 0;
+            const q = parseInt(document.getElementById('sk-qty').value);
+            if(!n || isNaN(q) || q <= 0) return alert("Enter valid product name and quantity.");
+            
+            const existingQty = db.stk[n] ? (typeof db.stk[n] === 'object' ? db.stk[n].qty : db.stk[n]) : 0;
+            
+            db.stk[n] = {
+                cost: c,
+                qty: existingQty + q
+            };
+
+            saveDb(); 
+            renderStock();
+            updateStockDataList();
+            document.getElementById('sk-name').value = ""; 
+            document.getElementById('sk-cost').value = ""; 
+            document.getElementById('sk-qty').value = "";
+        }
+
+        function deleteStockItem(item) {
+            if(confirm(`Remove "${item}"?`)) {
+                delete db.stk[item];
+                saveDb();
+                renderStock();
+                updateStockDataList();
+            }
+        }
+
+        function renderStock() {
+            const b = document.getElementById('stock-body'); 
+            b.innerHTML = "";
+            const items = Object.keys(db.stk);
+            if(items.length === 0) {
+                b.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No stock items added yet.</td></tr>`;
+                return;
+            }
+            items.forEach(item => {
+                const stockObj = db.stk[item];
+                const q = typeof stockObj === 'object' ? stockObj.qty : stockObj;
+                const cost = typeof stockObj === 'object' ? stockObj.cost || 0 : 0;
+
+                b.innerHTML += `<tr>
+                    <td><strong>${item}</strong></td>
+                    <td>₹ ${cost.toFixed(2)}</td>
+                    <td>${q}</td>
+                    <td style="color:${q < 3 ? 'red' : 'green'}; font-weight:bold;">${q < 3 ? (q <= 0 ? 'Out of Stock' : 'Low Stock') : 'Available'}</td>
+                    <td class="no-print"><button onclick="deleteStockItem('${item}')" class="btn-del">Delete</button></td>
+                </tr>`;
+            });
+        }
+
+        function addBillRow(n="", q=1, p=0) {
+            const r = document.getElementById('bill-items').insertRow();
+            r.innerHTML = `
+                <td><input type="text" class="cell-input p-n" list="stock-list" value="${n}" placeholder="Item Description" onchange="checkItemStock(this)"></td>
+                <td><input type="number" class="cell-input p-q" value="${q}" min="1" oninput="calc()"></td>
+                <td><input type="number" class="cell-input p-p" value="${p}" min="0" oninput="calc()"></td>
+                <td class="p-t" style="text-align:right; font-weight:bold">${(q*p).toFixed(2)}</td>
+                <td class="no-print" style="text-align:center;"><button onclick="this.closest('tr').remove(); calc();" style="border:none; background:none; color:red; cursor:pointer; font-weight:bold;">×</button></td>`;
+            calc();
+        }
+
+        function checkItemStock(elem) {
+            const itemName = elem.value.trim().toUpperCase();
+            elem.value = itemName;
+            if(db.stk[itemName] !== undefined) {
+                const stockObj = db.stk[itemName];
+                const currentStock = typeof stockObj === 'object' ? stockObj.qty : stockObj;
+                if(currentStock <= 0) {
+                    alert(`Warning: "${itemName}" is Out of Stock! (Stock: 0)`);
+                }
+            }
+        }
+
+        function calc() {
+            let total = 0;
+            document.querySelectorAll('#bill-items tr').forEach(r => {
+                const q = parseFloat(r.querySelector('.p-q').value) || 0;
+                const p = parseFloat(r.querySelector('.p-p').value) || 0;
+                const t = q * p;
+                r.querySelector('.p-t').innerText = t.toFixed(2);
+                total += t;
+            });
+            const paidInput = document.getElementById('paid-amt');
+            let paid = parseFloat(paidInput.value);
+            if(isNaN(paid) || paid < 0) paid = 0;
+
+            const pending = Math.max(0, total - paid);
+
+            document.getElementById('g-total').innerText = total.toFixed(2);
+            document.getElementById('pend-amt').innerText = pending.toFixed(2);
+            document.getElementById('pr-paid').innerText = paid.toFixed(2);
+            document.getElementById('pr-pend').innerText = pending.toFixed(2);
+        }
+
+        function resetInv() {
+            document.getElementById('cur-date').innerText = new Date().toLocaleDateString('en-IN');
+            const nextNo = (db.invs.length + 1).toString().padStart(4, '0');
+            document.getElementById('inv-no').innerText = nextNo;
+            document.getElementById('bill-items').innerHTML = "";
+            document.getElementById('paid-amt').value = 0;
+            document.getElementById('c-name').value = "";
+            document.getElementById('c-phone').value = "";
+            addBillRow();
+            calc();
+        }
+
+        function saveAndPrint() {
+            const rows = document.querySelectorAll('#bill-items tr');
+            if(rows.length === 0) return alert("Please add at least one item.");
+
+            const items = [];
+            let valid = false;
+            let stockCheckFailed = false;
+
+            rows.forEach(r => {
+                const name = r.querySelector('.p-n').value.trim().toUpperCase();
+                const qty = parseInt(r.querySelector('.p-q').value) || 0;
+
+                if(name && qty > 0) {
+                    if(db.stk[name] !== undefined) {
+                        const stockObj = db.stk[name];
+                        const available = typeof stockObj === 'object' ? stockObj.qty : stockObj;
+                        if(available < qty) {
+                            alert(`Insufficient Stock for "${name}"!\nAvailable: ${available} | Requested: ${qty}`);
+                            stockCheckFailed = true;
+                        }
+                    }
+                }
+            });
+
+            if(stockCheckFailed) return;
+
+            rows.forEach(r => {
+                const name = r.querySelector('.p-n').value.trim().toUpperCase();
+                const qty = parseInt(r.querySelector('.p-q').value) || 0;
+                const price = parseFloat(r.querySelector('.p-p').value) || 0;
+
+                if(name && qty > 0) {
+                    valid = true;
+                    items.push({ n: name, q: qty, p: price });
+                    
+                    if(db.stk[name] !== undefined) {
+                        if(typeof db.stk[name] === 'object') {
+                            db.stk[name].qty = Math.max(0, db.stk[name].qty - qty);
+                        } else {
+                            db.stk[name] = Math.max(0, db.stk[name] - qty);
+                        }
+                    }
+                }
+            });
+
+            if(!valid) return alert("Please enter valid item description.");
+
+            const custName = document.getElementById('c-name').value.trim().toUpperCase();
+            const custPhone = document.getElementById('c-phone').value.trim();
+
+            if(custName && !db.customers[custName]) {
+                db.customers[custName] = { phone: custPhone };
+            }
+
+            const invoice = {
+                no: document.getElementById('inv-no').innerText,
+                date: document.getElementById('cur-date').innerText,
+                name: custName,
+                phone: custPhone,
+                items: items,
+                total: document.getElementById('g-total').innerText,
+                paid: document.getElementById('paid-amt').value,
+                pending: document.getElementById('pend-amt').innerText
+            };
+
+            const existingIdx = db.invs.findIndex(i => i.no === invoice.no);
+            if(existingIdx >= 0) {
+                db.invs[existingIdx] = invoice;
+            } else {
+                db.invs.push(invoice);
+            }
+
+            saveDb(); 
+            updateStockDataList();
+            updateCustomerDataList();
+            document.getElementById('bill-counter').innerText = db.invs.length;
+            renderHistory(db.invs);
+
+            document.getElementById('print-payment').style.display = 'block';
+            window.print();
+            document.getElementById('print-payment').style.display = 'none';
+        }
+
+        function deleteInvoice(idx) {
+            if(confirm("Delete this invoice?")) {
+                db.invs.splice(idx, 1);
+                saveDb();
+                document.getElementById('bill-counter').innerText = db.invs.length;
+                renderHistory(db.invs);
+            }
+        }
+
+        function renderHistory(data) {
+            const list = document.getElementById('his-list'); 
+            list.innerHTML = "";
+
+            if(data.length === 0) {
+                list.innerHTML = `<div class="card" style="text-align:center; color:#64748b;">No matching invoices found.</div>`;
+                return;
+            }
+
+            data.slice().reverse().forEach((inv) => {
+                const realIdx = db.invs.findIndex(i => i.no === inv.no);
+                const isPending = parseFloat(inv.pending) > 0;
+                list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; border-left: 6px solid ${isPending ? 'var(--danger)' : 'var(--success)'}; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <strong>Invoice #${inv.no}</strong> | <small>${inv.date}</small><br>
+                        <span style="color:#475569;">${inv.name || 'Walk-in Customer'} ${inv.phone ? '(' + inv.phone + ')' : ''}</span>
+                    </div>
+                    <div style="text-align:right">
+                        <strong>₹ ${inv.total}</strong><br>
+                        <small style="color:${isPending ? 'var(--danger)' : 'var(--success)'}; font-weight:bold;">${isPending ? 'Pending: ₹' + inv.pending : 'Fully Paid'}</small>
+                    </div>
+                    <div>
+                        <button onclick="previewInv(${realIdx})" class="btn btn-tab">View / Edit</button>
+                        <button onclick="deleteInvoice(${realIdx})" class="btn-del">Delete</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function search() {
+            const q = document.getElementById('search-bar').value.toLowerCase().trim();
+            const filtered = db.invs.filter(i => 
+                i.no.toLowerCase().includes(q) || 
+                (i.name && i.name.toLowerCase().includes(q)) || 
+                (i.phone && i.phone.includes(q))
+            );
+            renderHistory(filtered);
+        }
+
+        function previewInv(idx) {
+            const v = db.invs[idx];
+            document.getElementById('inv-no').innerText = v.no;
+            document.getElementById('cur-date').innerText = v.date;
+            document.getElementById('c-name').value = v.name || "";
+            document.getElementById('c-phone').value = v.phone || "";
+            document.getElementById('paid-amt').value = v.paid || 0;
+            document.getElementById('bill-items').innerHTML = "";
+            v.items.forEach(it => addBillRow(it.n, it.q, it.p));
+            calc();
+            showTab('bill');
+        }
+    </script>
 </body>
 </html>
