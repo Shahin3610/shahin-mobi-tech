@@ -310,7 +310,8 @@
                 <h3 style="margin-top:0;">Add / Update Stock (Inventory)</h3>
                 <div style="display:flex; gap:10px; flex-wrap: wrap;">
                     <input type="text" id="sk-name" class="input-f" style="margin:0; flex: 2; min-width: 180px;" placeholder="Product Name">
-                    <input type="number" id="sk-cost" class="input-f" style="margin:0; flex: 1; min-width: 130px;" placeholder="Purchase/Cost Price (₹)" min="0">
+                    <input type="number" id="sk-cost" class="input-f" style="margin:0; flex: 1; min-width: 130px;" placeholder="Purchase Cost (₹)" min="0">
+                    <input type="number" id="sk-sell-cost" class="input-f" style="margin:0; flex: 1; min-width: 130px;" placeholder="Selling Cost / Price (₹)" min="0">
                     <input type="number" id="sk-qty" class="input-f" style="margin:0; flex: 1; min-width: 90px;" placeholder="Quantity" min="1">
                     <button onclick="addStock()" class="btn" style="background:var(--primary); color:white;">Update Stock</button>
                 </div>
@@ -321,7 +322,8 @@
                     <thead>
                         <tr>
                             <th>Product Name</th>
-                            <th>Unit Purchase Cost (₹)</th>
+                            <th>Purchase Cost (₹)</th>
+                            <th>Selling Price (₹)</th>
                             <th>Stock Level</th>
                             <th>Status</th>
                             <th width="80" class="no-print">Action</th>
@@ -681,7 +683,8 @@
             Object.keys(db.stk).forEach(item => {
                 const stockObj = db.stk[item];
                 const qty = typeof stockObj === 'object' ? stockObj.qty : stockObj;
-                dl.innerHTML += `<option value="${item}">Available Stock: ${qty}</option>`;
+                const sellCost = typeof stockObj === 'object' ? (stockObj.sellCost || 0) : 0;
+                dl.innerHTML += `<option value="${item}">Price: ₹${sellCost} | Stock: ${qty}</option>`;
             });
         }
 
@@ -899,13 +902,16 @@
         function addStock() {
             const n = document.getElementById('sk-name').value.trim().toUpperCase();
             const c = parseFloat(document.getElementById('sk-cost').value) || 0;
+            const sc = parseFloat(document.getElementById('sk-sell-cost').value) || 0;
             const q = parseInt(document.getElementById('sk-qty').value);
+
             if(!n || isNaN(q) || q <= 0) return alert("Enter valid product name and quantity.");
             
             const existingQty = db.stk[n] ? (typeof db.stk[n] === 'object' ? db.stk[n].qty : db.stk[n]) : 0;
             
             db.stk[n] = {
                 cost: c,
+                sellCost: sc,
                 qty: existingQty + q
             };
 
@@ -914,6 +920,7 @@
             updateStockDataList();
             document.getElementById('sk-name').value = ""; 
             document.getElementById('sk-cost').value = ""; 
+            document.getElementById('sk-sell-cost').value = ""; 
             document.getElementById('sk-qty').value = "";
         }
 
@@ -931,17 +938,19 @@
             b.innerHTML = "";
             const items = Object.keys(db.stk);
             if(items.length === 0) {
-                b.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">No stock items added yet.</td></tr>`;
+                b.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b;">No stock items added yet.</td></tr>`;
                 return;
             }
             items.forEach(item => {
                 const stockObj = db.stk[item];
                 const q = typeof stockObj === 'object' ? stockObj.qty : stockObj;
                 const cost = typeof stockObj === 'object' ? stockObj.cost || 0 : 0;
+                const sellCost = typeof stockObj === 'object' ? stockObj.sellCost || 0 : 0;
 
                 b.innerHTML += `<tr>
                     <td><strong>${item}</strong></td>
                     <td>₹ ${cost.toFixed(2)}</td>
+                    <td>₹ ${sellCost.toFixed(2)}</td>
                     <td>${q}</td>
                     <td style="color:${q < 3 ? 'red' : 'green'}; font-weight:bold;">${q < 3 ? (q <= 0 ? 'Out of Stock' : 'Low Stock') : 'Available'}</td>
                     <td class="no-print"><button onclick="deleteStockItem('${item}')" class="btn-del">Delete</button></td>
@@ -968,6 +977,13 @@
                 const stockObj = db.stk[itemName];
                 const currentStock = typeof stockObj === 'object' ? stockObj.qty : stockObj;
                 
+                // Auto fill selling cost in Price field
+                if(typeof stockObj === 'object' && stockObj.sellCost) {
+                    const priceInput = elem.closest('tr').querySelector('.p-p');
+                    if(priceInput) priceInput.value = stockObj.sellCost;
+                    calc();
+                }
+
                 if(currentStock <= 0) {
                     alert(`Warning: "${itemName}" is Out of Stock! (Stock: 0)`);
                 }
@@ -1041,7 +1057,6 @@
                 if(name && qty > 0) {
                     valid = true;
                     
-                    // Automatically get Purchase Cost from Inventory database
                     let unitCost = 0;
                     if(db.stk[name] !== undefined) {
                         const stockObj = db.stk[name];
