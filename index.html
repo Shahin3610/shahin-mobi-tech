@@ -1,291 +1,378 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SHAHIN MOBI TECH - Billing & Profit Manager</title>
+  <title>SHAHIN SHOP MANAGER | Cloud Portal</title>
   <style>
     * {
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      background-color: #f4f7f6;
-      padding: 20px;
+      background-color: #e9ecef;
+      color: #333;
+      padding: 10px;
     }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    /* Top Navigation Bar */
+    .navbar {
+      display: flex;
+      background-color: #f8f9fa;
+      border: 1px solid #dcdcdc;
+      border-radius: 6px;
+      padding: 8px 15px;
+      margin-bottom: 15px;
+      align-items: center;
+      gap: 10px;
     }
 
-    .header {
-      text-align: center;
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 15px;
-      margin-bottom: 20px;
-    }
-
-    .header h1 {
-      color: #007bff;
-      font-size: 26px;
-      text-transform: uppercase;
-    }
-
-    .header p {
-      color: #555;
+    .nav-btn {
+      padding: 8px 16px;
+      border: 1px solid #ced4da;
+      background-color: #e9ecef;
+      color: #495057;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
       font-size: 14px;
     }
 
-    .customer-details {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
+    .nav-btn.active {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+
+    .user-info {
+      margin-left: auto;
+      font-size: 13px;
+      color: #6c757d;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    /* Invoice Card */
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 25px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .invoice-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .brand-logo {
+      width: 45px;
+      height: 45px;
+      background-color: #0056b3;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 22px;
+      border-radius: 6px;
+      margin-right: 15px;
+    }
+
+    .brand-details h2 {
+      font-size: 20px;
+      color: #1a252f;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-details p {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 2px;
+    }
+
+    /* Invoice Meta Info */
+    .invoice-meta {
+      display: flex;
+      justify-content: space-between;
       margin-bottom: 20px;
-      background: #eef5ff;
+      background: #f8f9fa;
       padding: 15px;
       border-radius: 6px;
     }
 
-    .input-group {
-      display: flex;
-      flex-direction: column;
+    .customer-info h4, .invoice-date h4 {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 8px;
     }
 
-    .input-group label {
-      font-weight: bold;
-      margin-bottom: 5px;
-      font-size: 13px;
-    }
-
-    .input-group input {
-      padding: 8px;
+    .input-field {
+      display: block;
+      padding: 6px 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      margin-bottom: 5px;
+      font-size: 13px;
+      width: 220px;
     }
 
+    /* Items Table */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
-    table th, table td {
-      border: 1px solid #ddd;
-      padding: 10px;
+    th {
+      background-color: #f1f3f5;
+      color: #495057;
+      font-size: 12px;
+      text-transform: uppercase;
       text-align: left;
+      padding: 10px;
+      border-bottom: 2px solid #dee2e6;
     }
 
-    table th {
-      background-color: #007bff;
-      color: white;
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #e9ecef;
     }
 
     table input {
       width: 100%;
       padding: 6px;
-      border: 1px solid #ccc;
+      border: 1px solid #ced4da;
       border-radius: 4px;
+      font-size: 13px;
     }
 
-    .btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .btn-add {
-      background-color: #28a745;
+    .btn-add-item {
+      background-color: #007bff;
       color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 500;
     }
 
     .btn-remove {
-      background-color: #dc3545;
-      color: white;
-      padding: 4px 8px;
-    }
-
-    .btn-print {
-      background-color: #17a2b8;
-      color: white;
-      padding: 10px 20px;
+      color: #dc3545;
+      background: none;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
       font-size: 16px;
     }
 
-    .summary-box {
-      float: right;
-      width: 320px;
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
+    /* Profit & Total Dashboard Box */
+    .summary-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 15px;
     }
 
-    .summary-row {
+    .summary-card {
+      width: 280px;
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      padding: 12px 15px;
+    }
+
+    .summary-line {
       display: flex;
       justify-content: space-between;
+      font-size: 13px;
       margin-bottom: 8px;
-      font-size: 14px;
+      color: #495057;
     }
 
-    .summary-row.total {
-      font-weight: bold;
+    .summary-line.grand-total {
       font-size: 16px;
-      border-top: 1px solid #ccc;
+      font-weight: bold;
+      color: #0056b3;
+      border-top: 1px solid #dee2e6;
       padding-top: 8px;
-      color: #007bff;
     }
 
-    .summary-row.profit {
+    .summary-line.net-profit {
+      font-size: 14px;
       font-weight: bold;
       color: #28a745;
     }
 
-    .clear {
-      clear: both;
-    }
-
-    /* Print styling rules */
+    /* Customer Print Layout Rules */
     @media print {
-      .btn, .btn-remove, .cost-col, .profit-row, .cost-row {
+      .navbar, .btn-add-item, .btn-remove, .cost-column, .cost-summary-line {
         display: none !important;
       }
       body {
         background: white;
         padding: 0;
       }
-      .container {
+      .card {
         box-shadow: none;
-        border: none;
-        width: 100%;
+        padding: 0;
+        max-width: 100%;
       }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="header">
-    <h1>SHAHIN MOBI TECH</h1>
-    <p>Nagarbera, Kamrup, Assam - 781127 | Phone: 7086992870</p>
-  </div>
-
-  <div class="customer-details">
-    <div class="input-group">
-      <label>Customer Name:</label>
-      <input type="text" id="custName" placeholder="Enter customer name">
-    </div>
-    <div class="input-group">
-      <label>Customer Mobile:</label>
-      <input type="text" id="custPhone" placeholder="Enter phone number">
+  <!-- Top Navigation Bar -->
+  <div class="navbar">
+    <button class="nav-btn active">Create Bill</button>
+    <button class="nav-btn">Customers</button>
+    <button class="nav-btn">Analytics & Profit</button>
+    <button class="nav-btn">Inventory</button>
+    <button class="nav-btn">History</button>
+    <button class="nav-btn">Profile & Settings</button>
+    
+    <div class="user-info">
+      User: Shahin Alom (7086992870) | Invoices: 86
+      <button class="logout-btn">Logout</button>
     </div>
   </div>
 
-  <table id="billTable">
-    <thead>
-      <tr>
-        <th style="width: 35%;">Item Description</th>
-        <th style="width: 10%;">Qty</th>
-        <th class="cost-col" style="width: 15%;">Cost Price (₹)</th>
-        <th style="width: 15%;">Selling Price (₹)</th>
-        <th style="width: 15%;">Total (₹)</th>
-        <th style="width: 10%;">Action</th>
-      </tr>
-    </thead>
-    <tbody id="itemList">
-      <tr class="item-row">
-        <td><input type="text" class="item-desc" placeholder="Display, Battery, Repair Service"></td>
-        <td><input type="number" class="item-qty" value="1" min="1" oninput="calculateRows()"></td>
-        <td class="cost-col"><input type="number" class="item-cost" value="0" min="0" oninput="calculateRows()"></td>
-        <td><input type="number" class="item-price" value="0" min="0" oninput="calculateRows()"></td>
-        <td class="item-total">0.00</td>
-        <td><button type="button" class="btn btn-remove" onclick="removeRow(this)">X</button></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <button type="button" class="btn btn-add" onclick="addRow()">+ Add Item</button>
-
-  <div class="summary-box">
-    <div class="summary-row cost-row">
-      <span>Total Cost (কেনা দাম):</span>
-      <span>₹<span id="totalCost">0.00</span></span>
+  <!-- Invoice Form Card -->
+  <div class="card">
+    <div class="invoice-header">
+      <div class="brand-logo">S</div>
+      <div class="brand-details">
+        <h2>SHAHIN MOBI TECH</h2>
+        <p>Developed By Shahin | Nagarbera :: Kamrup :: Assam :: 781127 | Phone: 7086992870</p>
+      </div>
     </div>
-    <div class="summary-row total">
-      <span>Grand Total (বিক্রি):</span>
-      <span>₹<span id="grandTotal">0.00</span></span>
+
+    <div class="invoice-meta">
+      <div class="customer-info">
+        <h4>Customer Details:</h4>
+        <input type="text" class="input-field" placeholder="Full Name">
+        <input type="text" class="input-field" placeholder="Phone / Address">
+      </div>
+      <div class="invoice-date" style="text-align: right;">
+        <p style="font-size: 12px; color: #6c757d;">Date: <span id="current-date">23/8/2026</span></p>
+        <p style="font-size: 12px; color: #6c757d;">Invoice No: #0087</p>
+      </div>
     </div>
-    <div class="summary-row profit">
-      <span>Net Profit (মোট লাভ):</span>
-      <span>₹<span id="totalProfit">0.00</span></span>
+
+    <!-- Items Table -->
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 35%;">Description</th>
+          <th style="width: 10%;">Qty</th>
+          <th class="cost-column" style="width: 15%;">Sell Cost (₹)</th>
+          <th style="width: 15%;">Sell Price (₹)</th>
+          <th style="width: 20%;">Total (₹)</th>
+          <th style="width: 5%;"></th>
+        </tr>
+      </thead>
+      <tbody id="invoice-items">
+        <tr class="item-row">
+          <td><input type="text" placeholder="Item Description"></td>
+          <td><input type="number" class="item-qty" value="1" min="1" oninput="calculateInvoice()"></td>
+          <td class="cost-column"><input type="number" class="item-cost" value="0" min="0" oninput="calculateInvoice()"></td>
+          <td><input type="number" class="item-price" value="0" min="0" oninput="calculateInvoice()"></td>
+          <td class="item-total" style="font-weight: 500; font-size: 14px;">0.00</td>
+          <td><button class="btn-remove" onclick="removeRow(this)">×</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="btn-add-item" onclick="addRow()">+ Add Item</button>
+
+    <!-- Total & Profit Display -->
+    <div class="summary-container">
+      <div class="summary-card">
+        <div class="summary-line cost-summary-line">
+          <span>Total Sell Cost:</span>
+          <span>₹<span id="display-total-cost">0.00</span></span>
+        </div>
+        <div class="summary-line grand-total">
+          <span>Grand Total:</span>
+          <span>₹<span id="display-grand-total">0.00</span></span>
+        </div>
+        <div class="summary-line net-profit cost-summary-line">
+          <span>Net Profit:</span>
+          <span>₹<span id="display-net-profit">0.00</span></span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="clear"></div>
-  <br>
-  <button type="button" class="btn btn-print" onclick="window.print()">Print Receipt</button>
-</div>
-
-<script>
-  function addRow() {
-    const tbody = document.getElementById('itemList');
-    const tr = document.createElement('tr');
-    tr.className = 'item-row';
-    tr.innerHTML = `
-      <td><input type="text" class="item-desc" placeholder="Display, Battery, Repair Service"></td>
-      <td><input type="number" class="item-qty" value="1" min="1" oninput="calculateRows()"></td>
-      <td class="cost-col"><input type="number" class="item-cost" value="0" min="0" oninput="calculateRows()"></td>
-      <td><input type="number" class="item-price" value="0" min="0" oninput="calculateRows()"></td>
-      <td class="item-total">0.00</td>
-      <td><button type="button" class="btn btn-remove" onclick="removeRow(this)">X</button></td>
-    `;
-    tbody.appendChild(tr);
-  }
-
-  function removeRow(btn) {
-    const row = btn.closest('tr');
-    const tbody = document.getElementById('itemList');
-    if (tbody.rows.length > 1) {
-      row.remove();
-      calculateRows();
+  <script>
+    function addRow() {
+      const tbody = document.getElementById('invoice-items');
+      const tr = document.createElement('tr');
+      tr.className = 'item-row';
+      tr.innerHTML = `
+        <td><input type="text" placeholder="Item Description"></td>
+        <td><input type="number" class="item-qty" value="1" min="1" oninput="calculateInvoice()"></td>
+        <td class="cost-column"><input type="number" class="item-cost" value="0" min="0" oninput="calculateInvoice()"></td>
+        <td><input type="number" class="item-price" value="0" min="0" oninput="calculateInvoice()"></td>
+        <td class="item-total" style="font-weight: 500; font-size: 14px;">0.00</td>
+        <td><button class="btn-remove" onclick="removeRow(this)">×</button></td>
+      `;
+      tbody.appendChild(tr);
     }
-  }
 
-  function calculateRows() {
-    let grandTotal = 0;
-    let totalCost = 0;
+    function removeRow(button) {
+      const row = button.closest('tr');
+      const tbody = document.getElementById('invoice-items');
+      if (tbody.rows.length > 1) {
+        row.remove();
+        calculateInvoice();
+      }
+    }
 
-    const rows = document.querySelectorAll('.item-row');
-    rows.forEach(row => {
-      const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
-      const cost = parseFloat(row.querySelector('.item-cost').value) || 0;
-      const price = parseFloat(row.querySelector('.item-price').value) || 0;
+    function calculateInvoice() {
+      let grandTotal = 0;
+      let totalCost = 0;
 
-      const rowTotal = qty * price;
-      const rowCostTotal = qty * cost;
+      const rows = document.querySelectorAll('.item-row');
+      rows.forEach(row => {
+        const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+        const cost = parseFloat(row.querySelector('.item-cost').value) || 0;
+        const price = parseFloat(row.querySelector('.item-price').value) || 0;
 
-      row.querySelector('.item-total').innerText = rowTotal.toFixed(2);
+        const rowTotal = qty * price;
+        const rowCostTotal = qty * cost;
 
-      grandTotal += rowTotal;
-      totalCost += rowCostTotal;
-    });
+        row.querySelector('.item-total').innerText = rowTotal.toFixed(2);
 
-    const totalProfit = grandTotal - totalCost;
+        grandTotal += rowTotal;
+        totalCost += rowCostTotal;
+      });
 
-    document.getElementById('grandTotal').innerText = grandTotal.toFixed(2);
-    document.getElementById('totalCost').innerText = totalCost.toFixed(2);
-    document.getElementById('totalProfit').innerText = totalProfit.toFixed(2);
-  }
-</script>
+      const netProfit = grandTotal - totalCost;
 
+      document.getElementById('display-grand-total').innerText = grandTotal.toFixed(2);
+      document.getElementById('display-total-cost').innerText = totalCost.toFixed(2);
+      document.getElementById('display-net-profit').innerText = netProfit.toFixed(2);
+    }
+  </script>
 </body>
 </html>
