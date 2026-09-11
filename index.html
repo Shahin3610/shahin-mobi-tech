@@ -187,10 +187,15 @@
                 </div>
 
                 <div style="display: flex; justify-content: space-between; margin-bottom: 25px; gap: 20px;">
-                    <div style="border: 1px solid #000; padding: 12px; width: 320px; border-radius: 4px;">
+                    <div style="border: 1px solid #000; padding: 12px; width: 340px; border-radius: 4px;">
                         <strong style="font-size: 12px; letter-spacing: 1px;">CUSTOMER DETAILS:</strong>
                         <input type="text" id="c-name" class="cell-input" list="customer-list" placeholder="Full Name" oninput="autoFillCustomerInfo(this.value)" onchange="autoFillCustomerInfo(this.value)" style="margin-top:4px;">
                         <input type="text" id="c-phone" class="cell-input" placeholder="Phone / Address">
+                        
+                        <!-- PENDING BALANCE DISPLAY BOX -->
+                        <div id="cust-prev-pending-box" style="margin-top:6px; font-size:12px; font-weight:bold; color:var(--danger); border-top:1px dashed #cbd5e1; padding-top:4px;">
+                            Previous Pending Balance: ₹ <span id="cust-prev-pend-amt">0.00</span>
+                        </div>
                         <datalist id="customer-list"></datalist>
                     </div>
                     <div style="text-align: right; font-size: 14px;">
@@ -213,7 +218,7 @@
                     </thead>
                     <tbody id="bill-items"></tbody>
                 </table>
-                <button class="no-print btn" onclick="addBillRow()" style="margin-top:12px; background:#475569; color:white">+ Add Item</button>
+                <button class="no-print btn" onclick="addBillRow()" style="margin-top:12px; background:#475569; color:white">+ Add Item (Or Press Enter)</button>
 
                 <div style="text-align: right; margin-top: 30px; font-size: 16px;">
                     <div style="margin-bottom: 8px;">Grand Total: <strong>₹ <span id="g-total">0.00</span></strong></div>
@@ -730,19 +735,36 @@
 
         function autoFillCustomerInfo(val) {
             const cName = val.trim().toUpperCase();
-            if(!cName) return;
+            const pendSpan = document.getElementById('cust-prev-pend-amt');
 
-            if(db.customers && db.customers[cName] && db.customers[cName].phone) {
-                document.getElementById('c-phone').value = db.customers[cName].phone;
+            if(!cName) {
+                pendSpan.innerText = "0.00";
                 return;
             }
 
-            if(db.invs) {
+            // Fill Phone
+            if(db.customers && db.customers[cName] && db.customers[cName].phone) {
+                document.getElementById('c-phone').value = db.customers[cName].phone;
+            } else if(db.invs) {
                 const pastInv = db.invs.slice().reverse().find(i => i.name && i.name.toUpperCase() === cName);
                 if(pastInv && pastInv.phone) {
                     document.getElementById('c-phone').value = pastInv.phone;
                 }
             }
+
+            // Calculate and display total pending balance from all previous invoices
+            let totalPending = 0;
+            const curInvoiceNo = document.getElementById('inv-no').innerText;
+
+            if(db.invs) {
+                db.invs.forEach(inv => {
+                    if(inv.name && inv.name.toUpperCase() === cName && inv.no !== curInvoiceNo) {
+                        totalPending += (parseFloat(inv.pending) || 0);
+                    }
+                });
+            }
+
+            pendSpan.innerText = totalPending.toFixed(2);
         }
 
         async function updateProfile() {
@@ -813,7 +835,6 @@
                     return;
                 }
 
-                // Delete User Data & Credentials from Firebase
                 await fetch(`${DB_URL}/data/${currentUser}.json`, { method: 'DELETE' });
                 await fetch(`${DB_URL}/users/${currentUser}.json`, { method: 'DELETE' });
 
@@ -1029,15 +1050,30 @@
             });
         }
 
+        /* ADD ROW FUNCTION WITH ENTER KEY EVENT */
         function addBillRow(n="", q=1, p=0) {
             const r = document.getElementById('bill-items').insertRow();
             r.innerHTML = `
-                <td><input type="text" class="cell-input p-n" list="stock-list" value="${n}" placeholder="Item Description" onchange="checkItemStock(this)"></td>
-                <td><input type="number" class="cell-input p-q" value="${q}" min="1" oninput="calc()"></td>
-                <td><input type="number" class="cell-input p-p" value="${p}" min="0" oninput="calc()"></td>
+                <td><input type="text" class="cell-input p-n" list="stock-list" value="${n}" placeholder="Item Description" onchange="checkItemStock(this)" onkeydown="handleEnterAddRow(event, this)"></td>
+                <td><input type="number" class="cell-input p-q" value="${q}" min="1" oninput="calc()" onkeydown="handleEnterAddRow(event, this)"></td>
+                <td><input type="number" class="cell-input p-p" value="${p}" min="0" oninput="calc()" onkeydown="handleEnterAddRow(event, this)"></td>
                 <td class="p-t" style="text-align:right; font-weight:bold">${(q*p).toFixed(2)}</td>
                 <td class="no-print" style="text-align:center;"><button onclick="this.closest('tr').remove(); calc();" style="border:none; background:none; color:red; cursor:pointer; font-weight:bold;">×</button></td>`;
             calc();
+        }
+
+        function handleEnterAddRow(e, elem) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addBillRow();
+                // Focus on the description input of the newly created row
+                const tbody = document.getElementById('bill-items');
+                const lastRow = tbody.rows[tbody.rows.length - 1];
+                if (lastRow) {
+                    const descInput = lastRow.querySelector('.p-n');
+                    if (descInput) descInput.focus();
+                }
+            }
         }
 
         function checkItemStock(elem) {
@@ -1089,6 +1125,7 @@
             document.getElementById('paid-amt').value = 0;
             document.getElementById('c-name').value = "";
             document.getElementById('c-phone').value = "";
+            document.getElementById('cust-prev-pend-amt').innerText = "0.00";
             addBillRow();
             calc();
         }
@@ -1240,6 +1277,7 @@
             document.getElementById('paid-amt').value = v.paid || 0;
             document.getElementById('bill-items').innerHTML = "";
             v.items.forEach(it => addBillRow(it.n, it.q, it.p));
+            autoFillCustomerInfo(v.name || "");
             calc();
             showTab('bill');
         }
