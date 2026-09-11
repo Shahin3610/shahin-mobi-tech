@@ -189,7 +189,7 @@
                 <div style="display: flex; justify-content: space-between; margin-bottom: 25px; gap: 20px;">
                     <div style="border: 1px solid #000; padding: 12px; width: 320px; border-radius: 4px;">
                         <strong style="font-size: 12px; letter-spacing: 1px;">CUSTOMER DETAILS:</strong>
-                        <input type="text" id="c-name" class="cell-input" list="customer-list" placeholder="Full Name" onchange="autoFillCustomerInfo(this.value)" style="margin-top:4px;">
+                        <input type="text" id="c-name" class="cell-input" list="customer-list" placeholder="Full Name" oninput="autoFillCustomerInfo(this.value)" onchange="autoFillCustomerInfo(this.value)" style="margin-top:4px;">
                         <input type="text" id="c-phone" class="cell-input" placeholder="Phone / Address">
                         <datalist id="customer-list"></datalist>
                     </div>
@@ -387,6 +387,17 @@
                 <input type="password" id="pass-new" class="input-f" placeholder="Enter New Password">
 
                 <button onclick="changePassword()" class="btn" style="background:var(--primary); color:white; width: 100%; margin-top: 15px; padding: 12px;">Change Password</button>
+            </div>
+
+            <!-- DANGER ZONE: DELETE ACCOUNT -->
+            <div class="card" style="max-width: 600px; margin: 20px auto; border-color: #fca5a5; background: #fff5f5;">
+                <h3 style="margin-top:0; color:var(--danger); border-bottom: 2px solid #fca5a5; padding-bottom: 10px;">Danger Zone - Account Actions</h3>
+                <p style="font-size:13px; color:#991b1b; margin-bottom:15px;">Permanently delete your account and all associated shop data from cloud database. This action cannot be undone.</p>
+
+                <label style="font-weight:bold; font-size:13px; color:#991b1b;">Confirm Account Password:</label>
+                <input type="password" id="del-acc-pass" class="input-f" placeholder="Enter password to confirm deletion">
+
+                <button onclick="deleteAccount()" class="btn" style="background:var(--danger); color:white; width: 100%; margin-top: 15px; padding: 12px;">Delete Account Permanently</button>
             </div>
         </div>
     </div>
@@ -688,18 +699,49 @@
             });
         }
 
+        /* CUSTOMER AUTO-FILL & DATALIST UPDATER */
         function updateCustomerDataList() {
             const dl = document.getElementById('customer-list');
             dl.innerHTML = "";
-            Object.keys(db.customers).forEach(cName => {
-                dl.innerHTML += `<option value="${cName}">${db.customers[cName].phone || ''}</option>`;
+            
+            const customerMap = {};
+            if(db.customers) {
+                Object.keys(db.customers).forEach(cName => {
+                    customerMap[cName.toUpperCase()] = db.customers[cName].phone || "";
+                });
+            }
+
+            if(db.invs) {
+                db.invs.forEach(inv => {
+                    if(inv.name) {
+                        const nameKey = inv.name.toUpperCase();
+                        if(!customerMap[nameKey]) {
+                            customerMap[nameKey] = inv.phone || "";
+                        }
+                    }
+                });
+            }
+
+            Object.keys(customerMap).forEach(cName => {
+                const phoneStr = customerMap[cName] ? ` (${customerMap[cName]})` : '';
+                dl.innerHTML += `<option value="${cName}">${phoneStr}</option>`;
             });
         }
 
         function autoFillCustomerInfo(val) {
             const cName = val.trim().toUpperCase();
-            if(db.customers[cName]) {
-                document.getElementById('c-phone').value = db.customers[cName].phone || "";
+            if(!cName) return;
+
+            if(db.customers && db.customers[cName] && db.customers[cName].phone) {
+                document.getElementById('c-phone').value = db.customers[cName].phone;
+                return;
+            }
+
+            if(db.invs) {
+                const pastInv = db.invs.slice().reverse().find(i => i.name && i.name.toUpperCase() === cName);
+                if(pastInv && pastInv.phone) {
+                    document.getElementById('c-phone').value = pastInv.phone;
+                }
             }
         }
 
@@ -751,6 +793,35 @@
                 document.getElementById('pass-new').value = "";
             } catch(e) {
                 alert("Error updating password.");
+            }
+        }
+
+        /* ACCOUNT DELETE FUNCTION */
+        async function deleteAccount() {
+            const pass = document.getElementById('del-acc-pass').value.trim();
+            if(!pass) return alert("Please enter your account password to confirm deletion.");
+
+            try {
+                const res = await fetch(`${DB_URL}/users/${currentUser}.json`);
+                const userData = await res.json();
+
+                if(!userData || userData.password !== pass) {
+                    return alert("Incorrect Password! Account deletion aborted.");
+                }
+
+                if(!confirm("Are you ABSOLUTELY sure? This will delete your entire shop record, inventory, and invoices permanently!")) {
+                    return;
+                }
+
+                // Delete User Data & Credentials from Firebase
+                await fetch(`${DB_URL}/data/${currentUser}.json`, { method: 'DELETE' });
+                await fetch(`${DB_URL}/users/${currentUser}.json`, { method: 'DELETE' });
+
+                alert("Your account and all associated data have been permanently deleted.");
+                localStorage.removeItem('shahin_remembered_user');
+                location.reload();
+            } catch(e) {
+                alert("Failed to delete account. Cloud connection error.");
             }
         }
 
@@ -977,7 +1048,6 @@
                 const stockObj = db.stk[itemName];
                 const currentStock = typeof stockObj === 'object' ? stockObj.qty : stockObj;
                 
-                // Auto fill selling cost in Price field
                 if(typeof stockObj === 'object' && stockObj.sellCost) {
                     const priceInput = elem.closest('tr').querySelector('.p-p');
                     if(priceInput) priceInput.value = stockObj.sellCost;
